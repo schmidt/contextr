@@ -81,10 +81,21 @@ module ContextR
 
     protected
       def replace_core_method( extended_class, method_name )
+        num_of_args = extended_class.instance_method( method_name ).arity
+        arg_signature = case num_of_args <=> 0
+        when 0
+          ""
+        when 1
+          "%s" % Array.new( num_of_args ) { |i| "arg%d" % i }.join( ", " )
+        else 
+          "*arguments"
+        end
+        arg_call = arg_signature.empty? ? "" : ", " + arg_signature
+
         extended_class.class_eval %Q{
-          def #{method_name} *arguments
+          def #{method_name} #{arg_signature} 
             ContextR::current_layer.extended( self ).send(
-                :#{method_name}, *arguments )
+                :#{method_name}#{arg_call} )
           end
         }
       end
