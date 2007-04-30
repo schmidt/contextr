@@ -248,10 +248,9 @@ module ContextR
     def behaviour_with_pres( instance )
       combined_pres = self.combine_pres( instance )
       bound_core = self.bind_core( instance )
-      nature = MethodNature.new
 
       lambda do | *arguments |
-        nature.reset( arguments, nil, false )
+        nature = MethodNature.new( arguments, nil, false )
 
         combined_pres.call( nature )
         unless nature.break
@@ -265,10 +264,9 @@ module ContextR
     def behaviour_with_posts( instance )
       bound_core = self.bind_core( instance )
       combined_posts = self.combine_posts( instance )
-      nature = MethodNature.new
 
       lambda do | *arguments |
-        nature.reset( arguments, nil, false )
+        nature = MethodNature.new( arguments, nil, false )
 
         nature.return_value = bound_core.call( *arguments )
         combined_posts.call( nature )
@@ -281,10 +279,9 @@ module ContextR
       combined_pres = self.combine_pres( instance )
       bound_core = self.bind_core( instance )
       combined_posts = self.combine_posts( instance )
-      nature = MethodNature.new
 
       lambda do | *arguments |
-        nature.reset( arguments, nil, false )
+        nature = MethodNature.new( arguments, nil, false )
 
         combined_pres.call( nature )
         unless nature.break
@@ -298,12 +295,11 @@ module ContextR
     def behaviour_with_arounds( instance )
       bound_core = self.bind_core( instance )
       bound_arounds = self.bind_arounds( instance )
-      nature = MethodNature.new
 
       lambda do | *arguments |
         working_arounds = bound_arounds.clone
-        nature.reset( arguments, nil, false,
-                      around_block( nature, working_arounds, bound_core ) ) 
+        nature = MethodNature.new( arguments, nil, false)
+        nature.block = around_block( nature, working_arounds, bound_core )
 
         catch( :break_in_around ) do
           working_arounds.pop.call( nature )
@@ -316,10 +312,9 @@ module ContextR
       combined_pres = self.combine_pres( instance )
       bound_core = self.bind_core( instance )
       bound_arounds = self.bind_arounds( instance )
-      nature = MethodNature.new
 
       lambda do | *arguments |
-        nature.reset( arguments, nil, false ) 
+        nature = MethodNature.new( arguments, nil, false ) 
 
         combined_pres.call( nature )
         unless nature.break
@@ -337,11 +332,10 @@ module ContextR
       bound_core = self.bind_core( instance )
       bound_arounds = self.bind_arounds( instance )
       combined_posts = self.combine_posts( instance )
-      nature = MethodNature.new
 
       lambda do | *arguments |
         working_arounds = bound_arounds.clone
-        nature.reset( arguments, nil, false,
+        nature = MethodNature.new( arguments, nil, false,
                       around_block( nature, working_arounds, bound_core ) ) 
 
         catch( :break_in_around ) do
@@ -358,10 +352,9 @@ module ContextR
       bound_core = self.bind_core( instance )
       bound_arounds = self.bind_arounds( instance )
       combined_posts = self.combine_posts( instance )
-      nature = MethodNature.new
 
       lambda do | *arguments |
-        nature.reset( arguments, nil, false ) 
+        nature = MethodNature.new( arguments, nil, false ) 
 
         combined_pres.call( nature )
         unless nature.break
