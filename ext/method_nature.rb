@@ -1,4 +1,7 @@
-class MethodNature < Struct.new(:arguments, :return_value, :break, :block)
+unless Object.const_defined? "MethodNatureSuperClass"
+  MethodNatureSuperClass = Struct.new(:arguments, :return_value, :break, :block)
+end
+class MethodNature < MethodNatureSuperClass 
   def break!( *value )
     self.break = true
     self.return_value = value.first unless value.empty?

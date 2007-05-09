@@ -1,1 +1,1 @@
-require File.dirname(__FILE__) + '/../contextr'
+require File.dirname(__FILE__) + '/../lib/contextr'

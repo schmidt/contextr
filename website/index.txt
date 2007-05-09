@@ -1,0 +1,119 @@
+h1. Context-oriented Programming in Ruby
+
+h1. &#x2192; 'contextr'
+
+
+h2. What
+
+TODO
+
+h2. Installing
+
+Nothing more than typing
+
+<pre syntax="ruby">sudo gem install contextr</pre>
+
+h2. The basics
+
+In your code use 
+
+<pre syntax="ruby">require 'rubygems'
+require 'contextr'</pre>
+
+and ContextR will be ready to use.
+
+h2. Demonstration of usage
+
+<pre syntax="ruby">
+class Person
+  attr_accessor :name, :address, :university
+
+  def initialize name, address, university
+    self.name = name
+    self.address = address
+    self.university = university
+  end
+
+  def to_s
+    "Name: #{name}"
+  end
+end
+
+class University
+  attr_accessor :name, :address
+
+  def initialize name, address
+    self.name = name
+    self.address = address
+  end
+
+  def to_s
+    "Name: #{name}"
+  end
+end
+
+class Person
+  layer :address, :education
+
+  address.post :to_s do | n |
+    n.return_value += "; Address: #{address}"
+  end
+
+  education.post :to_s do | n |
+    n.return_value += ";\n[Education] #{university}"
+  end
+end
+
+class University
+  layer :address
+
+  address.post :to_s do | n |
+    n.return_value += "; Address: #{address}"
+  end
+end
+
+hpi = University.new( "Hasso-Plattner-Institut", "Potsdam" )
+somePerson = Person.new( "Gregor Schmidt", "Berlin", hpi )
+
+puts somePerson
+ContextR::with_layers :address do
+  puts somePerson
+
+  ContextR::with_layers :education do
+    puts somePerson
+
+    ContextR::without_layers :address do
+      puts somePerson
+    end
+  end
+end
+</pre>
+The above code prints:
+
+<pre>
+Name: Gregor Schmidt
+
+Name: Gregor Schmidt; Address: Berlin
+
+Name: Gregor Schmidt; Address: Berlin;
+[Education] Name: Hasso-Plattner-Institut; Address: Potsdam
+
+Name: Gregor Schmidt;
+[Education] Name: Hasso-Plattner-Institut
+</pre>
+
+You may find other examples in the <code>examples</code> folder.
+
+h2. Other resources
+
+* "Rubyforge Project Page":http://rubyforge.org/projects/contextr
+* "Author's Development Blog - The Ruby Ahead":http://www.nach-vorne.de
+* "Ohloh Statistics on ContextR":http://www.ohloh.net/projects/5037
+
+h2. License
+
+This code is free to use under the same terms as Ruby 
+
+h2. Contact
+
+Comments are welcome. Send an email to "Gregor Schmidt":mailto:ruby@schmidtwisser.de
