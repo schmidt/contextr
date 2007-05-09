@@ -1,16 +1,11 @@
 module ContextR
   @@genid = 0
-  class << self
-    def gensym( name, kind = "", postfix = "_%05d_" )
-      @@genid += 1
-      ( "_#{name}_#{kind}#{postfix}" % @@genid ).intern
-    end
-
-    def symbolize( layer_klass )
+  module ClassMethods
+    def symbolize( layer_klass ) # :nodoc:
       layer_klass.namespace_free_name.gsub( "Layer", "" ).downcase.to_sym
     end
 
-    def layerize( layer_symbol )
+    def layerize( layer_symbol ) # :nodoc:
       "#{layer_symbol}_layer".camelize
     end
 
@@ -28,11 +23,11 @@ module ContextR
       Dynamic.let( { :layers => Dynamic[:layers] - layers }, &block )
     end
 
-    def layer_by_symbol( layer_symbol )
+    def layer_by_symbol( layer_symbol ) # :nodoc:
       layer_by_name( layerize( layer_symbol ) )
     end
 
-    def layer_by_name( layer_name )
+    def layer_by_name( layer_name ) # :nodoc:
       unless ContextR.const_defined?( layer_name )
         ContextR::module_eval( 
             "class #{layer_name} < Layer; end", __FILE__, __LINE__ )
@@ -41,13 +36,21 @@ module ContextR
       ContextR.const_get( layer_name )
     end
 
-    def current_layer
-      Layer.compose( Dynamic[:layers] )
+    def current_layer # :nodoc:
+      Layer.compose( self.current_layers )
+    end
+
+    # returns the currently activated layers
+    def current_layers
+      Dynamic[:layers]
     end
   end
 
+  extend ClassMethods
 
-  class Layer # its role as base instance of all layers
+
+  class Layer # :nodoc:
+    # its role as base instance of all layers
     class << self
       attr_accessor_with_default_setter :base_layers, :combined_layers do 
         Hash.new
@@ -113,7 +116,8 @@ module ContextR
     end
   end
 
-  class Layer # its role as base class for all other layers
+  class Layer # :nodoc:
+    # its role as base class for all other layers
     class << self
       attr_accessor_with_default_setter :extended_classes do 
         Hash.new do | classes, extended_class |
@@ -160,25 +164,45 @@ module ContextR
     end
   end
 
-  class LayerInClass # its public interface
-    attr_accessor :contextualized_class
-    attr_accessor :layer
+  # This is the public interface of a Layer within a class definition. Use it
+  # to add context-dependent behaviour. It is available after calling 
+  # <code>layer <em>layer_name</em></code> within a class body via 
+  # <code><em>layer_name</em></code>.
+  #
+  #  class Foo
+  #    layer :any
+  #
+  #    def bar
+  #      "bar"
+  #    end
+  #
+  #    any.pre :bar do | n |
+  #      logger.info "Foo#bar called"
+  #    end
+  #  end
+  class LayerInClass
+    attr_accessor :contextualized_class, :layer # :nodoc:
 
-    def initialize( contextualized_class, layer )
+    def initialize( contextualized_class, layer ) # :nodoc:
       self.contextualized_class = contextualized_class 
       self.layer = layer
     end
 
+    # Adds a pre-wrapper to a single method
     def pre( method_name, &block )
       layer.methods_of( self.contextualized_class )[method_name].pres << 
           block.to_unbound_method( self.contextualized_class )
       nil
     end
+
+    # Adds a post-wrapper to a single method
     def post( method_name, &block )
       layer.methods_of( self.contextualized_class )[method_name].posts <<
           block.to_unbound_method( self.contextualized_class )
       nil
     end
+
+    # Adds an around-wrapper to a single method
     def around( method_name, &block )
       layer.methods_of( self.contextualized_class )[method_name].arounds << 
           block.to_unbound_method( self.contextualized_class )
@@ -187,7 +211,7 @@ module ContextR
     alias :wrap :around
   end
 
-  class ExtendedObject
+  class ExtendedObject # :nodoc:
     attr_accessor :proxied_object
     attr_accessor :extended_methods
     attr_accessor :behaviours
@@ -205,7 +229,7 @@ module ContextR
     end
   end
 
-  class ContextualizedMethod
+  class ContextualizedMethod # :nodoc:
     attr_accessor :core
     attr_accessor :behaviour_cache
 

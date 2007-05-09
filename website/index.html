@@ -68,6 +68,9 @@ require 'contextr'</pre>
 
 
 <pre syntax="ruby">
+require "rubygems" 
+require "contextr" 
+
 class Person
   attr_accessor :name, :address, :university
 
@@ -118,31 +121,36 @@ end
 hpi = University.new( "Hasso-Plattner-Institut", "Potsdam" )
 somePerson = Person.new( "Gregor Schmidt", "Berlin", hpi )
 
+puts 
 puts somePerson
-ContextR::with_layers :address do
+ContextR::with_layers :education do
+  puts 
   puts somePerson
 
-  ContextR::with_layers :education do
+  ContextR::with_layers :address do
+    puts 
     puts somePerson
 
-    ContextR::without_layers :address do
+    ContextR::without_layers :education do
+      puts 
       puts somePerson
     end
   end
 end
+puts 
 </pre>
 The above code prints:
 
 <pre>
 Name: Gregor Schmidt
 
-Name: Gregor Schmidt; Address: Berlin
+Name: Gregor Schmidt;
+[Education] Name: Hasso-Plattner-Institut
 
 Name: Gregor Schmidt; Address: Berlin;
 [Education] Name: Hasso-Plattner-Institut; Address: Potsdam
 
-Name: Gregor Schmidt;
-[Education] Name: Hasso-Plattner-Institut
+Name: Gregor Schmidt; Address: Berlin
 </pre>
 
 	<p>You may find other examples in the <code>examples</code> folder.</p>
@@ -154,7 +162,7 @@ Name: Gregor Schmidt;
 	<ul>
 	<li><a href="http://rubyforge.org/projects/contextr">Rubyforge Project Page</a></li>
 		<li><a href="http://www.nach-vorne.de">Author&#8217;s Development Blog &#8211; The Ruby Ahead</a></li>
-		<li><a href="http://www.ohloh.net/projects/5037">Ohloh Statistics on ContextR</a></li>
+		<li><a href="http://www.ohloh.net/projects/5037">ContextR Statistics on ohloh</a></li>
 	</ul>
 
 
@@ -169,7 +177,7 @@ Name: Gregor Schmidt;
 
 	<p>Comments are welcome. Send an email to <a href="mailto:ruby@schmidtwisser.de">Gregor Schmidt</a></p>
     <p class="coda">
-      <a href="mailto:drnicwilliams@gmail.com">Dr Nic</a>, 8th May 2007<br>
+      <a href="mailto:drnicwilliams@gmail.com">Dr Nic</a>, 9th May 2007<br>
       Theme extended from <a href="http://rb2js.rubyforge.org/">Paul Battley</a>
     </p>
 </div>

@@ -1,4 +1,6 @@
+#--
 # TODO: get rid of this workaround to avoid double loading on `rake test`
+#++
 unless Object.const_defined? "ContextR"
   require 'rubygems'
   require 'active_support'
