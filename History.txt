@@ -1,3 +1,10 @@
++++ 0.0.2 2007-05-08
+
++ 1 major change:
+  + Changed the wrapper execution order to a hopefulle more natural ordering
++ 1 minor change:
+  + finished transition from unit tests to rspec based specification
+
 +++ 0.0.1 2007-05-08
 
 + 1 major enhancement:

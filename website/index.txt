@@ -25,6 +25,9 @@ and ContextR will be ready to use.
 h2. Demonstration of usage
 
 <pre syntax="ruby">
+require "rubygems"
+require "contextr" 
+
 class Person
   attr_accessor :name, :address, :university
 
@@ -72,34 +75,40 @@ class University
   end
 end
 
+
 hpi = University.new( "Hasso-Plattner-Institut", "Potsdam" )
 somePerson = Person.new( "Gregor Schmidt", "Berlin", hpi )
 
+puts 
 puts somePerson
-ContextR::with_layers :address do
+ContextR::with_layers :education do
+  puts 
   puts somePerson
 
-  ContextR::with_layers :education do
+  ContextR::with_layers :address do
+    puts 
     puts somePerson
 
-    ContextR::without_layers :address do
+    ContextR::without_layers :education do
+      puts 
       puts somePerson
     end
   end
 end
+puts 
 </pre>
 The above code prints:
 
 <pre>
 Name: Gregor Schmidt
 
-Name: Gregor Schmidt; Address: Berlin
+Name: Gregor Schmidt;
+[Education] Name: Hasso-Plattner-Institut
 
 Name: Gregor Schmidt; Address: Berlin;
 [Education] Name: Hasso-Plattner-Institut; Address: Potsdam
 
-Name: Gregor Schmidt;
-[Education] Name: Hasso-Plattner-Institut
+Name: Gregor Schmidt; Address: Berlin
 </pre>
 
 You may find other examples in the <code>examples</code> folder.

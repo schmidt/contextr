@@ -2,8 +2,6 @@ require "rubygems"
 require "contextr" 
 
 class Person
-  layer :address, :education
-
   attr_accessor :name, :address, :university
 
   def initialize name, address, university
@@ -15,6 +13,23 @@ class Person
   def to_s
     "Name: #{name}"
   end
+end
+
+class University
+  attr_accessor :name, :address
+
+  def initialize name, address
+    self.name = name
+    self.address = address
+  end
+
+  def to_s
+    "Name: #{name}"
+  end
+end
+
+class Person
+  layer :address, :education
 
   address.post :to_s do | n |
     n.return_value += "; Address: #{address}"
@@ -27,17 +42,6 @@ end
 
 class University
   layer :address
-
-  attr_accessor :name, :address
-
-  def initialize name, address
-    self.name = name
-    self.address = address
-  end
-
-  def to_s
-    "Name: #{name}"
-  end
 
   address.post :to_s do | n |
     n.return_value += "; Address: #{address}"
