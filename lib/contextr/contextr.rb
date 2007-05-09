@@ -302,7 +302,7 @@ module ContextR
         nature.block = around_block( nature, working_arounds, bound_core )
 
         catch( :break_in_around ) do
-          working_arounds.pop.call( nature )
+          working_arounds.shift.call( nature )
         end
         nature.return_value
       end
@@ -321,7 +321,7 @@ module ContextR
           working_arounds = bound_arounds.clone
           nature.block = around_block( nature, working_arounds, bound_core )
           catch( :break_in_around ) do
-            working_arounds.pop.call( nature )
+            working_arounds.shift.call( nature )
           end
         end
         nature.return_value
@@ -339,7 +339,7 @@ module ContextR
                       around_block( nature, working_arounds, bound_core ) ) 
 
         catch( :break_in_around ) do
-          working_arounds.pop.call( nature )
+          working_arounds.shift.call( nature )
         end
         combinded_posts.call( nature ) unless nature.break
 
@@ -361,7 +361,7 @@ module ContextR
           working_arounds = bound_arounds.clone
           nature.block = around_block( nature, working_arounds, bound_core )
           catch( :break_in_around ) do
-            working_arounds.pop.call( nature )
+            working_arounds.shift.call( nature )
           end
           unless nature.break
             combined_posts.call( nature )
@@ -376,7 +376,7 @@ module ContextR
     def combine_pres( instance )
       bound_pres = self.pres.collect { | p | p.bind( instance ) }
       lambda do | nature |
-        bound_pres.reverse.each do | bound_pre |
+        bound_pres.each do | bound_pre |
           bound_pre.call( nature )
           break if nature.break
         end
@@ -390,7 +390,7 @@ module ContextR
     def around_block( nature, bound_arounds, bound_core )
       lambda do
         unless bound_arounds.empty?
-          bound_arounds.pop.call( nature )
+          bound_arounds.shift.call( nature )
           throw( :break_in_around ) if nature.break
         else
           nature.return_value = bound_core.call( *nature.arguments )
@@ -405,10 +405,11 @@ module ContextR
     def combine_posts( instance )
       bound_posts = self.posts.collect { | p | p.bind( instance ) }
       lambda do | nature |
-        bound_posts.each do | bound_post |
+        bound_posts.reverse.each do | bound_post |
           bound_post.call( nature )
           break if nature.break
         end
+        nature.return_value
       end
     end
   end

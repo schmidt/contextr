@@ -27,9 +27,6 @@ class SimpleWrapperClass
     n.call_next
   end
 end
-
-
-
 context "An instance of a contextified class" do
   setup do
     @instance = SimpleWrapperClass.new
@@ -74,6 +71,172 @@ context "An instance of a contextified class" do
         @instance.instance_variables.should_include( 
               "@#{qualifier}_wrapped_method_called" )
       end
+    end
+
+    specify "should run a #{qualifier}-ed method without additional " +
+            "behaviour when a specific layer is activated and afterwards " + 
+            "deactivated" do
+      ContextR.with_layers( :simple_wrappers ) do
+        ContextR.without_layers( :simple_wrappers ) do
+          @instance.send( "#{qualifier}_wrapped_method" ).should == 
+                "#{qualifier}_wrapped_method"
+          @instance.instance_variables.should_not_include( 
+                "@#{qualifier}_wrapped_method_called" )
+        end
+      end
+    end
+  end
+end
+
+class NestedLayerActivationClass
+  attr_accessor :execution
+  def initialize
+    @execution = []
+  end
+
+  def preed_method
+    @execution << "core"
+    "preed_method"
+  end
+
+  def posted_method
+    @execution << "core"
+    "posted_method"
+  end
+
+  def arounded_method
+    @execution << "core"
+    "arounded_method"
+  end
+
+  layer :outer_layer, :inner_layer
+
+  inner_layer.pre :preed_method do
+    @execution << "inner_layer"
+  end
+
+  outer_layer.pre :preed_method do
+    @execution << "outer_layer"
+  end
+
+  inner_layer.post :posted_method do
+    @execution << "inner_layer"
+  end
+
+  outer_layer.post :posted_method do
+    @execution << "outer_layer"
+  end
+
+  inner_layer.around :arounded_method do | n |
+    @execution << "inner_layer_pre"
+    n.call_next
+    @execution << "inner_layer_post"
+  end
+
+  outer_layer.around :arounded_method do | n |
+    @execution << "outer_layer_pre"
+    n.call_next
+    @execution << "outer_layer_post"
+  end
+
+  def contextualized_method
+    @execution << "core"
+    "contextualized_method"
+  end
+
+  layer :break_in_pre, :break_in_post, :break_in_around
+  layer :other_layer
+
+  break_in_pre.pre :contextualized_method do | n |
+    n.return_value = "contextualized_method"
+    @execution << "breaking_pre"
+    n.break!
+  end
+  break_in_post.post :contextualized_method do | n |
+    @execution << "breaking_post"
+    n.break!
+  end
+  break_in_around.around :contextualized_method do | n |
+    @execution << "breaking_around"
+    n.return_value = "contextualized_method"
+    n.break!
+    n.call_next
+  end
+
+  other_layer.pre :contextualized_method do | n |
+    @execution << "other_pre"
+  end
+  other_layer.post :contextualized_method do | n |
+    @execution << "other_post"
+  end
+  other_layer.around :contextualized_method do | n |
+    @execution << "other_around"
+    n.call_next
+  end
+end
+
+pre_spec = lambda do | instance |
+  instance.execution.shift.should == "outer_layer"
+  instance.execution.shift.should == "inner_layer"
+  instance.execution.shift.should == "core"
+end
+post_spec = lambda do | instance |
+  instance.execution.shift.should == "core"
+  instance.execution.shift.should == "inner_layer"
+  instance.execution.shift.should == "outer_layer"
+end
+around_spec = lambda do | instance |
+  instance.execution.shift.should == "outer_layer_pre"
+  instance.execution.shift.should == "inner_layer_pre"
+  instance.execution.shift.should == "core"
+  instance.execution.shift.should == "inner_layer_post"
+  instance.execution.shift.should == "outer_layer_post"
+end
+
+pre_break_spec = lambda do | instance |
+  instance.execution.shift.should == "breaking_pre"
+end
+post_break_spec = lambda do | instance |
+  instance.execution.shift.should == "other_pre"
+  instance.execution.shift.should == "other_around"
+  instance.execution.shift.should == "core"
+  instance.execution.shift.should == "other_post"
+  instance.execution.shift.should == "breaking_post"
+end
+around_break_spec = lambda do | instance |
+  instance.execution.shift.should == "other_pre"
+  instance.execution.shift.should == "breaking_around"
+end
+
+%w{pre post around}.each do | qualifier |
+  context "#{qualifier.capitalize} wrappers within a method" do
+    setup do
+      @instance = NestedLayerActivationClass.new
+    end
+    specify "should run in the sequence of nesting, when using nested " +
+            "activation" do
+      ContextR::with_layers :outer_layer do
+        ContextR::with_layers :inner_layer do
+          @instance.send( "#{qualifier}ed_method" ).should == 
+                "#{qualifier}ed_method"
+        end
+      end
+      eval("#{qualifier}_spec").call( @instance )
+    end
+    specify "should run in the sequence of nesting, when using simultaneous " +
+            "activation" do
+      ContextR::with_layers :outer_layer, :inner_layer do
+        @instance.send( "#{qualifier}ed_method" ).should == 
+              "#{qualifier}ed_method"
+      end
+      eval("#{qualifier}_spec").call( @instance )
+    end
+
+    specify "should be able to stop the execution with `break!`" do
+      ContextR::with_layers "break_in_#{qualifier}".to_sym, :other_layer do
+        @instance.contextualized_method.should == "contextualized_method"
+      end
+      eval("#{qualifier}_break_spec").call( @instance )
     end
   end
 end
