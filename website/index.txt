@@ -108,7 +108,7 @@ h2. Other resources
 
 * "Rubyforge Project Page":http://rubyforge.org/projects/contextr
 * "Author's Development Blog - The Ruby Ahead":http://www.nach-vorne.de
-* "Ohloh Statistics on ContextR":http://www.ohloh.net/projects/5037
+* "ContextR Statistics on ohloh":http://www.ohloh.net/projects/5037
 
 h2. License
 
