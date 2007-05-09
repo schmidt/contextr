@@ -50,15 +50,15 @@ somePerson = Person.new( "Gregor Schmidt", "Berlin", hpi )
 
 puts 
 puts somePerson
-ContextR::with_layers :address do
+ContextR::with_layers :education do
   puts 
   puts somePerson
 
-  ContextR::with_layers :education do
+  ContextR::with_layers :address do
     puts 
     puts somePerson
 
-    ContextR::without_layers :address do
+    ContextR::without_layers :education do
       puts 
       puts somePerson
     end

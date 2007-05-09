@@ -173,6 +173,32 @@ class NestedLayerActivationClass
     @execution << "other_around"
     n.call_next
   end
+
+  layer :multiple_pres, :multiple_posts, :multiple_arounds
+  multiple_pres.pre :contextualized_method do
+    @execution << "first_pre"
+  end
+  multiple_pres.pre :contextualized_method do
+    @execution << "second_pre"
+  end
+
+  multiple_posts.post :contextualized_method do
+    @execution << "first_post"
+  end
+  multiple_posts.post :contextualized_method do
+    @execution << "second_post"
+  end
+
+  multiple_arounds.around :contextualized_method do | n |
+    @execution << "first_around_pre"
+    n.call_next
+    @execution << "first_around_post"
+  end
+  multiple_arounds.around :contextualized_method do | n |
+    @execution << "second_around_pre"
+    n.call_next
+    @execution << "second_around_post"
+  end
 end
 
 pre_spec = lambda do | instance |
@@ -208,6 +234,24 @@ around_break_spec = lambda do | instance |
   instance.execution.shift.should == "breaking_around"
 end
 
+pre_multiple_spec = lambda do | instance |
+  instance.execution.shift.should == "first_pre"
+  instance.execution.shift.should == "second_pre"
+  instance.execution.shift.should == "core"
+end
+post_multiple_spec = lambda do | instance |
+  instance.execution.shift.should == "core"
+  instance.execution.shift.should == "second_post"
+  instance.execution.shift.should == "first_post"
+end
+around_multiple_spec = lambda do | instance |
+  instance.execution.shift.should == "first_around_pre"
+  instance.execution.shift.should == "second_around_pre"
+  instance.execution.shift.should == "core"
+  instance.execution.shift.should == "second_around_post"
+  instance.execution.shift.should == "first_around_post"
+end
+
 %w{pre post around}.each do | qualifier |
   context "#{qualifier.capitalize} wrappers within a method" do
     setup do
@@ -232,6 +276,13 @@ end
       eval("#{qualifier}_spec").call( @instance )
     end
 
+    specify "should run in the sequence of definition within the same layer" do
+      ContextR::with_layers "multiple_#{qualifier}s".to_sym do
+        @instance.contextualized_method.should == "contextualized_method"
+      end
+      eval("#{qualifier}_multiple_spec").call( @instance )
+    end
+
     specify "should be able to stop the execution with `break!`" do
       ContextR::with_layers "break_in_#{qualifier}".to_sym, :other_layer do
         @instance.contextualized_method.should == "contextualized_method"
@@ -240,3 +291,4 @@ end
     end
   end
 end
+
