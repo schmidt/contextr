@@ -40,7 +40,7 @@ class Module
   #   attr_accessor_with_default_setter(symbol, ...) { ... }
   #
   def attr_accessor_with_default_setter( *syms ) 
-    raise 'Default value in block required' unless block
+    raise 'Default value in block required' unless block_given?
     syms.each do | sym |
       module_eval do
         attr_writer( sym )

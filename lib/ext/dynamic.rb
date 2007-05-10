@@ -1,3 +1,13 @@
+# This library was created by Christian Neukirchen in the context of 
+# EuRuKo 2005 and is licensed under the same terms as Ruby.
+#
+# It provides dynamically scoped variables. It is used within ContextR to 
+# store the current, thread-wide activated layers.
+#
+# For more information see the corresponding slides at
+# http://chneukirchen.org/talks/euruko-2005/chneukirchen-euruko2005-contextr.pdf
+#
+# (c) 2005 - Christian Neukirchen - http://chneukirchen.org
 module Dynamic
   class << self
     Thread.main[:DYNAMIC] = Hash.new { |hash, key|

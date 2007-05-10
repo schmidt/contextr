@@ -6,10 +6,11 @@ Inspired by ContextL (Pascal Costanza) and ContextS (Robert Hirschfeld) with
 thanks to Christian Neukirchen for giving the name and lots of ideas.
 
 For more information see 
+- http://contextr.rubyforge.org/
 - http://www.contextr.org/ or 
 - http://www.swa.hpi.uni-potsdam.de/cop/
 
-This code is published under the same license as Ruby. See LICENSE for more 
+This code is published under the same license as Ruby. See LICENSE.txt for more 
 information.
 
 (c) 2007 - Gregor Schmidt - Berlin, Germany
@@ -41,7 +42,7 @@ information.
 
 For a more detailed description
 - visit the project homepage at RubyForge[http://contextr.rubyforge.org/]
-- have a look at the examples folder in the ContextR distribution
+- have a look at the +examples+ folder in the ContextR distribution
 
 For detailed API descriptions have a look at the following classes and modules
 - Class
