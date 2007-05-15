@@ -1,7 +1,12 @@
++++ 0.0.3 2007-05-08
++ 1 minor change
+  + Added support for class side methods
+
 +++ 0.0.2 2007-05-08
 
 + 1 major change:
-  + Changed the wrapper execution order to a hopefulle more natural ordering
+  + Changed the wrapper execution order to a hopefully more natural ordering
+  + Added documentation
 + 1 minor change:
   + finished transition from unit tests to rspec based specification
 

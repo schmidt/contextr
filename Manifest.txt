@@ -20,6 +20,7 @@ rake/specific_group_spec_task.rb
 scripts/txt2html
 setup.rb
 spec/contextr/contextr_api_spec.rb
+spec/contextr/contextr_class_side_spec.rb
 spec/contextr/contextr_functional_spec.rb
 spec/core_ext/module_spec.rb
 spec/core_ext/proc_spec.rb

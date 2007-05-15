@@ -115,7 +115,8 @@ You may find other examples in the <code>examples</code> folder.
 
 h2. Other resources
 
-* "Rubyforge Project Page":http://rubyforge.org/projects/contextr
+* "ContextR API documentation":http://contextr.rubyforge.org/contextr
+* "RubyForge Project Page":http://rubyforge.org/projects/contextr
 * "Author's Development Blog - The Ruby Ahead":http://www.nach-vorne.de
 * "ContextR Statistics on ohloh":http://www.ohloh.net/projects/5037
 

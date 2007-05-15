@@ -79,7 +79,7 @@ module ContextR
       end
 
       def inherited( new_base_layer )
-        unless new_base_layer.name.empty?
+        unless new_base_layer.name.nil? or new_base_layer.name.empty?
           base_layers[ContextR::symbolize( new_base_layer )] = new_base_layer
         end
       end
@@ -146,8 +146,13 @@ module ContextR
 
       def extended( object )
         self.extended_objects ||= Hash.new do | cache, object |
+          object_class = if object.kind_of? Class
+            (class << object; self; end)
+          else
+            object.class
+          end
           cache[ object ] = 
-              ExtendedObject.new( object, self.methods_of( object.class ) )
+              ExtendedObject.new( object, self.methods_of( object_class ) )
         end
         self.extended_objects[object]
       end

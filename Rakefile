@@ -68,7 +68,7 @@ task :website_upload do
   remote_dir = "/var/www/gforge-projects/#{RUBYFORGE_PROJECT}/"
   # remote_dir = "/var/www/gforge-projects/#{RUBYFORGE_PROJECT}/#{GEM_NAME}"
   local_dir = 'website'
-  sh %{rsync -av --delete-excluded --exclude=".*/" #{local_dir}/ #{host}:#{remote_dir}}
+  sh %{rsync -av --exclude=".*/" #{local_dir}/ #{host}:#{remote_dir}}
 end
 
 desc 'Generate and upload website files'
@@ -88,6 +88,14 @@ task :check_version do
   end
 end
 
+#desc 'Submit the docs HTML files to RubyForge'
+#task :docs_publish => [ :docs ] do
+#  config = YAML.load(File.read(File.expand_path("~/.rubyforge/user-config.yml")))
+#  host = "#{config["username"]}@rubyforge.org"
+#  remote_dir = "/var/www/gforge-projects/#{RUBYFORGE_PROJECT}/api"
+#  local_dir = 'doc'
+#  sh %{rsync -av --delete-excluded --exclude=".*/" #{local_dir}/ #{host}:#{remote_dir}}
+#end
 
 # Most of this code was taken from the Rubinius Rakefile. 
 # Thanks for the help.
