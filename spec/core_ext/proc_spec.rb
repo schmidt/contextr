@@ -9,39 +9,39 @@ class ProcSpecFoo
   end
 end
 
-context "A Proc" do
-  setup do
+describe "A Proc" do
+  before do
     @a = lambda do @a = true; "a" end
     @b = lambda do @b = true; "b" end
     @foo = ProcSpecFoo.new
   end
 
-  specify "should convert itself to an unbound method" do 
-    @b.to_unbound_method( ProcSpecFoo ).should_be_kind_of UnboundMethod
+  it "should convert itself to an unbound method" do 
+    @b.to_unbound_method( ProcSpecFoo ).should be_a_kind_of( UnboundMethod )
   end
 
-  specify "which should be bindable to an instance of the specified class" do 
+  it "which should be bindable to an instance of the specified class" do 
     lambda do
       @b.to_unbound_method( ProcSpecFoo ).bind( @foo )
     end.should_not raise_error
   end
 
-  specify "which should execute the proc in turn" do
+  it "which should execute the proc in turn" do
     @b.to_unbound_method( ProcSpecFoo ).bind( @foo ).call.should == "b"
     @foo.instance_variable_get( :@b ).should == true
   end
 
-  specify "should respond to `+`" do
-    @b.should_respond_to :+
+  it "should respond to `+`" do
+    @b.should respond_to( :+ )
   end
 
-  specify "should build a joined block with `self.+( other_proc)`" do
-    (@a + @b).should_be_kind_of Proc
+  it "should build a joined block with `self.+( other_proc)`" do
+    (@a + @b).should be_a_kind_of( Proc )
   end
 end
 
-context "The result of `+` of two Procs" do
-  setup do
+describe "The result of `+` of two Procs" do
+  before do
     @a = lambda do | arg | 
       arg || "a" 
     end
@@ -50,12 +50,12 @@ context "The result of `+` of two Procs" do
     end
   end
 
-  specify "should give the correct return value" do
+  it "should give the correct return value" do
     (@a + @b).call( nil ).should == "b"
     (@b + @a).call( nil ).should == "a"
   end
 
-  specify "should pass through given parameters" do
+  it "should pass through given parameters" do
     (@a + @b).call( 1 ).should == 1
   end
 end

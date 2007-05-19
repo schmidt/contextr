@@ -9,8 +9,8 @@ class ContextRApiFoo
   end
 end
 
-context 'Each class' do
-  specify 'should provide a method to enable a single layer' do
+describe 'Each class' do
+  it 'should provide a method to enable a single layer' do
     lambda do
       class ContextRApiFoo 
         layer :bar
@@ -18,7 +18,7 @@ context 'Each class' do
     end.should_not raise_error
   end
 
-  specify 'should provide a method to access these layers by name' do
+  it 'should provide a method to access these layers by name' do
     begin
       class ContextRApiFoo
         bar
@@ -27,8 +27,8 @@ context 'Each class' do
   end
 end
 
-context 'Each layer in a class' do
-  specify 'should allow the definition of pre method wrappers ' +
+describe 'Each layer in a class' do
+  it 'should allow the definition of pre method wrappers ' +
           'with `pre`' do
     lambda do
       class ContextRApiFoo
@@ -39,7 +39,7 @@ context 'Each layer in a class' do
       end
     end.should_not raise_error
   end
-  specify 'should allow the definition of post method wrappers ' +
+  it 'should allow the definition of post method wrappers ' +
           'with `post`' do
     lambda do
       class ContextRApiFoo
@@ -50,7 +50,7 @@ context 'Each layer in a class' do
       end
     end.should_not raise_error
   end
-  specify 'should allow the definition of around method wrappers ' +
+  it 'should allow the definition of around method wrappers ' +
           'with `around`' do
     lambda do
       class ContextRApiFoo
@@ -62,7 +62,7 @@ context 'Each layer in a class' do
       end
     end.should_not raise_error
   end
-  specify 'should allow the definition of around method wrappers ' +
+  it 'should allow the definition of around method wrappers ' +
           'with `wrap`' do
     lambda do
       class ContextRApiFoo

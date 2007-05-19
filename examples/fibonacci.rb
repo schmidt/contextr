@@ -4,38 +4,40 @@ require "contextr"
 require 'test/unit'
 require 'benchmark'
 
-class FibonacciCalculator
-  def compute fixnum
-    if fixnum == 1 or fixnum == 0
-      fixnum
-    elsif fixnum < 0
-      raise ArgumentError, "Fibonacci not defined for negative numbers"
-    else
-      compute(fixnum - 1) + compute(fixnum - 2)
+class Fibonacci
+  class << self
+    def compute fixnum
+      if fixnum == 1 or fixnum == 0
+        fixnum
+      elsif fixnum < 0
+        raise ArgumentError, "Fibonacci not defined for negative numbers"
+      else
+        compute(fixnum - 1) + compute(fixnum - 2)
+      end
     end
-  end
-
-  layer :fib_pre_post, :fib_wrap
-  attr_accessor :cache
-
-  fib_pre_post.pre :compute do | nature |
-    self.cache ||= {}
-    if self.cache.key? nature.arguments.first
-      nature.break! self.cache[nature.arguments.first]
-    end
-  end
-
-  fib_pre_post.post :compute do | nature |
-    self.cache[nature.arguments.first] = nature.return_value
-  end
   
-  fib_wrap.wrap :compute do | nature |
-    self.cache ||= {}
-    if self.cache.key? nature.arguments.first
-      nature.return_value = self.cache[nature.arguments.first]
-    else
-      nature.call_next
+    layer :fib_pre_post, :fib_wrap
+    attr_accessor :cache
+
+    fib_pre_post.pre :compute do | nature |
+      self.cache ||= {}
+      if self.cache.key? nature.arguments.first
+        nature.break! self.cache[nature.arguments.first]
+      end
+    end
+
+    fib_pre_post.post :compute do | nature |
       self.cache[nature.arguments.first] = nature.return_value
+    end
+    
+    fib_wrap.wrap :compute do | nature |
+      self.cache ||= {}
+      if self.cache.key? nature.arguments.first
+        nature.return_value = self.cache[nature.arguments.first]
+      else
+        nature.call_next
+        self.cache[nature.arguments.first] = nature.return_value
+      end
     end
   end
 end
@@ -58,17 +60,17 @@ end
 
 class FibonacciTest < Test::Unit::TestCase
   def setup
-    @fibonacci = FibonacciCalculator.new
+    Fibonacci.cache = {}
   end
   
   def test_basic_function
     Benchmark.bm(20) do |x|
       x.report("Recursive:") {
-        assert_equal       0, @fibonacci.compute(  0 )
-        assert_equal       1, @fibonacci.compute(  1 )
-        assert_equal       1, @fibonacci.compute(  2 )
-        assert_equal      55, @fibonacci.compute( 10 )
-        assert_equal    6765, @fibonacci.compute( 20 )
+        assert_equal       0, Fibonacci.compute(  0 )
+        assert_equal       1, Fibonacci.compute(  1 )
+        assert_equal       1, Fibonacci.compute(  2 )
+        assert_equal      55, Fibonacci.compute( 10 )
+        assert_equal    6765, Fibonacci.compute( 20 )
         # The following are too hard for the simple solution
         assert_equal  75_025, 25.fibonacci
         assert_equal 9227465, 35.fibonacci
@@ -84,18 +86,17 @@ class FibonacciTest < Test::Unit::TestCase
     Benchmark.bm(20) do |x|
       x.report("Layered Pre/Post:") {
         ContextR.with_layers :fib_pre_post do
-          assert_equal       0, @fibonacci.compute(  0 )
-          assert_equal       1, @fibonacci.compute(  1 )
-          assert_equal       1, @fibonacci.compute(  2 )
-          assert_equal       2, @fibonacci.compute(  3 )
-          assert_equal      55, @fibonacci.compute( 10 )
-          assert_equal    6765, @fibonacci.compute( 20 )
-          assert_equal  75_025, @fibonacci.compute( 25 )
-          assert_equal 9227465, @fibonacci.compute( 35 )
+          assert_equal       0, Fibonacci.compute(  0 )
+          assert_equal       1, Fibonacci.compute(  1 )
+          assert_equal       1, Fibonacci.compute(  2 )
+          assert_equal      55, Fibonacci.compute( 10 )
+          assert_equal    6765, Fibonacci.compute( 20 )
+          assert_equal  75_025, Fibonacci.compute( 25 )
+          assert_equal 9227465, Fibonacci.compute( 35 )
           assert_equal 280571172992510140037611932413038677189525,
-                                @fibonacci.compute( 200 )
+                                Fibonacci.compute( 200 )
           assert_equal 176023680645013966468226945392411250770384383304492191886725992896575345044216019675,
-          @fibonacci.compute( 400 )
+          Fibonacci.compute( 400 )
         end
       }
     end
@@ -105,17 +106,17 @@ class FibonacciTest < Test::Unit::TestCase
     Benchmark.bm(20) do |x|
       x.report("Layered Wrap:") {
         ContextR.with_layers :fib_wrap do
-          assert_equal       0, @fibonacci.compute(  0 )
-          assert_equal       1, @fibonacci.compute(  1 )
-          assert_equal       1, @fibonacci.compute(  2 )
-          assert_equal      55, @fibonacci.compute( 10 )
-          assert_equal    6765, @fibonacci.compute( 20 )
-          assert_equal  75_025, @fibonacci.compute( 25 )
-          assert_equal 9227465, @fibonacci.compute( 35 )
+          assert_equal       0, Fibonacci.compute(  0 )
+          assert_equal       1, Fibonacci.compute(  1 )
+          assert_equal       1, Fibonacci.compute(  2 )
+          assert_equal      55, Fibonacci.compute( 10 )
+          assert_equal    6765, Fibonacci.compute( 20 )
+          assert_equal  75_025, Fibonacci.compute( 25 )
+          assert_equal 9227465, Fibonacci.compute( 35 )
           assert_equal 280571172992510140037611932413038677189525,
-                                @fibonacci.compute( 200 )
+                                Fibonacci.compute( 200 )
           assert_equal 176023680645013966468226945392411250770384383304492191886725992896575345044216019675,
-                                @fibonacci.compute( 400 )
+                                Fibonacci.compute( 400 )
         end
       }
     end

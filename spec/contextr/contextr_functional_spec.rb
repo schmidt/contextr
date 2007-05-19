@@ -27,17 +27,17 @@ class SimpleWrapperClass
     n.call_next
   end
 end
-context "An instance of a contextified class" do
-  setup do
+describe "An instance of a contextified class" do
+  before do
     @instance = SimpleWrapperClass.new
   end
 
-  specify "should run a simple method " + 
+  it "should run a simple method " + 
           "*normally* when all layers are deactivated" do
     @instance.non_contextified_method.should == "non_contextified_method"
   end
 
-  specify "should run a simple method " +
+  it "should run a simple method " +
           "*normally* when any layer is activated" do
     ContextR.with_layers( :simple_wrappers ) do
       @instance.non_contextified_method.should == "non_contextified_method"
@@ -45,42 +45,42 @@ context "An instance of a contextified class" do
   end
 
   %w{pre post around}.each do | qualifier |
-    specify "should run a #{qualifier}-ed method " +
+    it "should run a #{qualifier}-ed method " +
             "*normally* when all layers are deactivated" do
       @instance.send( "#{qualifier}_wrapped_method" ).should == 
             "#{qualifier}_wrapped_method"
-      @instance.instance_variables.should_not_include( 
+      @instance.instance_variables.should_not include( 
             "@#{qualifier}_wrapped_method_called" )
     end
 
-    specify "should run a #{qualifier}-ed method " +
+    it "should run a #{qualifier}-ed method " +
             "*normally* when any layer is activated" do
       ContextR.with_layers( :dummy ) do
         @instance.send( "#{qualifier}_wrapped_method" ).should == 
               "#{qualifier}_wrapped_method"
-        @instance.instance_variables.should_not_include( 
+        @instance.instance_variables.should_not include( 
               "@#{qualifier}_wrapped_method_called" )
       end
     end
 
-    specify "should run a #{qualifier}-ed method with " +
+    it "should run a #{qualifier}-ed method with " +
             "additional behaviour when a specific layer is activated" do
       ContextR.with_layers( :simple_wrappers ) do
         @instance.send( "#{qualifier}_wrapped_method" ).should == 
               "#{qualifier}_wrapped_method"
-        @instance.instance_variables.should_include( 
+        @instance.instance_variables.should include( 
               "@#{qualifier}_wrapped_method_called" )
       end
     end
 
-    specify "should run a #{qualifier}-ed method without additional " +
+    it "should run a #{qualifier}-ed method without additional " +
             "behaviour when a specific layer is activated and afterwards " + 
             "deactivated" do
       ContextR.with_layers( :simple_wrappers ) do
         ContextR.without_layers( :simple_wrappers ) do
           @instance.send( "#{qualifier}_wrapped_method" ).should == 
                 "#{qualifier}_wrapped_method"
-          @instance.instance_variables.should_not_include( 
+          @instance.instance_variables.should_not include( 
                 "@#{qualifier}_wrapped_method_called" )
         end
       end
@@ -253,11 +253,11 @@ around_multiple_spec = lambda do | instance |
 end
 
 %w{pre post around}.each do | qualifier |
-  context "#{qualifier.capitalize} wrappers within a method" do
-    setup do
+  describe "#{qualifier.capitalize} wrappers within a method" do
+    before do
       @instance = NestedLayerActivationClass.new
     end
-    specify "should run in the sequence of nesting, when using nested " +
+    it "should run in the sequence of nesting, when using nested " +
             "activation" do
       ContextR::with_layers :outer_layer do
         ContextR::with_layers :inner_layer do
@@ -267,7 +267,7 @@ end
       end
       eval("#{qualifier}_spec").call( @instance )
     end
-    specify "should run in the sequence of nesting, when using simultaneous " +
+    it "should run in the sequence of nesting, when using simultaneous " +
             "activation" do
       ContextR::with_layers :outer_layer, :inner_layer do
         @instance.send( "#{qualifier}ed_method" ).should == 
@@ -276,14 +276,14 @@ end
       eval("#{qualifier}_spec").call( @instance )
     end
 
-    specify "should run in the sequence of definition within the same layer" do
+    it "should run in the sequence of definition within the same layer" do
       ContextR::with_layers "multiple_#{qualifier}s".to_sym do
         @instance.contextualized_method.should == "contextualized_method"
       end
       eval("#{qualifier}_multiple_spec").call( @instance )
     end
 
-    specify "should be able to stop the execution with `break!`" do
+    it "should be able to stop the execution with `break!`" do
       ContextR::with_layers "break_in_#{qualifier}".to_sym, :other_layer do
         @instance.contextualized_method.should == "contextualized_method"
       end
