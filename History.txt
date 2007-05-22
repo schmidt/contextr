@@ -1,4 +1,4 @@
-+++ 0.0.3 2007-05-08
++++ 0.0.3 2007-05-22
 
 + 3 major changes
   + Added #add_context_sensor and #with_current_context
