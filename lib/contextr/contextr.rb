@@ -129,6 +129,28 @@ module ContextR
       end
     end
 
+    # defines block within methods to be context aware
+    #
+    #   def bar
+    #     tmp = "a"
+    #     ContextR.in :foo do
+    #       tmp << "b"
+    #     end
+    #     tmp << "c"
+    #   end
+    #
+    #   bar        # => "ac"
+    #   ContextR::with_layer :foo do
+    #     bar      # => "ac"
+    #   end
+    #
+    # :call-seq:
+    #   in( layer_name )
+    #
+    def in(layer_name)
+      yield if current_layers.include?(layer_name)
+    end
+
     def symbolize( layer_klass ) # :nodoc:
       layer_klass.namespace_free_name.gsub( "Layer", "" ).downcase.to_sym
     end

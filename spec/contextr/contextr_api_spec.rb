@@ -123,4 +123,32 @@ describe ContextR do
       end
     end.should_not raise_error
   end
+
+  it "should allow the definition of context dependent behaviour using #in" do
+    lambda do
+      class ContextRApiFoo
+        def in_method
+          ret = "a"
+          ContextR::in :foo do
+            ret << "b"
+          end
+          ret << "c"
+        end
+      end
+    end.should_not raise_error
+  end
+
+  it "should ignore behaviour defined in #in blocks when the specified " +
+     "is not active" do
+    ContextR::without_layer :foo do
+      ContextRApiFoo.new.in_method.should == "ac"
+    end
+  end
+
+  it "should execute behaviour defined in #in blocks when the specified " +
+     "is active" do
+    ContextR::with_layer :foo do
+      ContextRApiFoo.new.in_method.should == "abc"
+    end
+  end
 end

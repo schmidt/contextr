@@ -1,3 +1,8 @@
++++ 0.0.4 2007--
+
++ 1 major change
+  + Added #in method to allow in method definition of context behaviour
+
 +++ 0.0.3 2007-05-22
 
 + 3 major changes
