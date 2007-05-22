@@ -1,5 +1,8 @@
 +++ 0.0.3 2007-05-08
-+ 1 minor change
+
++ 3 major changes
+  + Added #add_context_sensor and #with_current_context
+  + Added #activate_layers and #deactivate_layers
   + Added support for class side methods
 
 +++ 0.0.2 2007-05-08
