@@ -96,6 +96,39 @@ module ContextR
       Dynamic[:layers].collect{ | layer_class | self.symbolize( layer_class ) }
     end
 
+    # allows the registration of context sensors. These are blocks that are
+    # called on with_current_context and should return a list of layers, that
+    # should be activated.
+    # 
+    #   ContextR::add_context_sensor do
+    #     # some clever code computes some layers to activate
+    #     [ :foo ]
+    #   end
+    #
+    # :call-seq:
+    #   add_context_sensor() { ... }
+    #
+    def add_context_sensor &block
+      @sensors ||= []
+      @sensors << block
+    end
+
+    # asks all sensors to compute the current context, e.g. layers that should
+    # be active, and executes the given block in the context. It works basically
+    # like with_layers
+    # 
+    # :call-seq:
+    #   with_current_context() { ... }
+    #
+    def with_current_context(&block) 
+      layers = @sensors.inject([]) do | akku, sensor |
+        akku | sensor.call
+      end
+      ContextR::with_layers(*layers) do
+        block.call
+      end
+    end
+
     def symbolize( layer_klass ) # :nodoc:
       layer_klass.namespace_free_name.gsub( "Layer", "" ).downcase.to_sym
     end

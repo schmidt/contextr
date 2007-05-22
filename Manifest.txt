@@ -6,6 +6,7 @@ README.txt
 Rakefile
 examples/education.rb
 examples/fibonacci.rb
+examples/with_current_context.rb
 lib/contextr.rb
 lib/contextr/contextr.rb
 lib/contextr/layer.rb

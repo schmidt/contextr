@@ -76,3 +76,51 @@ describe 'Each layer in a class' do
   end
 end
 
+describe ContextR do
+  it "should activate layers with activate_layers" do
+    ContextR::activate_layers :foo
+    ContextR::current_layers.should include(:foo)
+  end
+
+  it "should activate multiple layers wiht activate_layers" do
+    ContextR::activate_layers :bar, :baz
+    ContextR::current_layers.should include(:foo)
+    ContextR::current_layers.should include(:bar)
+    ContextR::current_layers.should include(:baz)
+  end
+
+  it "should deactivate layers with activate_layers" do
+    ContextR::deactivate_layers :bar
+    ContextR::current_layers.should_not include(:bar)
+    ContextR::current_layers.should include(:foo)
+    ContextR::current_layers.should include(:baz)
+  end
+
+  it "should deactivate multiple layers wiht activate_layers" do
+    ContextR::deactivate_layers :foo, :baz
+    ContextR::current_layers.should_not include(:bar)
+    ContextR::current_layers.should_not include(:foo)
+    ContextR::current_layers.should_not include(:baz)
+  end
+
+  it "should allow the registration of context sensors" do
+    lambda do
+      ContextR::add_context_sensor do
+        [:foo]
+      end
+    end.should_not raise_error
+  end
+
+  it "should allow the use of with_current_context and use the sensors to " +
+     "compute it" do
+    ContextR::add_context_sensor do
+      [:bar]
+    end
+    lambda do
+      ContextR::with_current_context do
+        ContextR::current_layers.should include(:foo)
+        ContextR::current_layers.should include(:bar)
+      end
+    end.should_not raise_error
+  end
+end
