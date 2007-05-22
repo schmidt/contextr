@@ -26,6 +26,23 @@ module ContextR
       end
       Dynamic.let( { :layers => Dynamic[:layers] | layers }, &block )
     end
+    alias with_layer with_layers
+
+    # allows the explicit activation of layers
+    # 
+    #   ContextR::activate_layers( :foo, :bar )
+    #   ContextR::current_layers            # => [:default, :foo, :bar]
+    #
+    # :call-seq:
+    #   deactivate_layers( layer_name, ... )
+    #
+    def activate_layers( *layer_symbols )
+      layers = layer_symbols.collect do | layer_symbol |
+        ContextR.layer_by_name( ContextR.layerize( layer_symbol ) )
+      end
+      Dynamic[:layers] |= layers
+    end
+    alias activate_layer activate_layers
 
     # allows the explicit deactivation of layers within a block context
     # 
@@ -47,6 +64,26 @@ module ContextR
       end
       Dynamic.let( { :layers => Dynamic[:layers] - layers }, &block )
     end
+    alias without_layer without_layers
+
+    # allows the explicit deactivation of layers
+    # 
+    #   ContextR::activate_layers( :foo, :bar )
+    #   ContextR::current_layers            # => [:default, :foo, :bar]
+    #
+    #   ContextR::deactivate_layers( :foo )
+    #   ContextR::current_layers            # => [:default, :bar]
+    #
+    # :call-seq:
+    #   deactivate_layers( layer_name, ... )
+    #
+    def deactivate_layers( *layer_symbols )
+      layers = layer_symbols.collect do | layer_symbol |
+        ContextR.layer_by_name( ContextR.layerize( layer_symbol ) )
+      end
+      Dynamic[:layers] -= layers
+    end
+    alias deactivate_layer deactivate_layers
 
     # returns the names of the currently activated layers
     #

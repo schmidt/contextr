@@ -292,3 +292,30 @@ end
   end
 end
 
+describe ContextR do
+  it "should activate layers with activate_layers" do
+    ContextR::activate_layers :foo
+    ContextR::current_layers.should include(:foo)
+  end
+
+  it "should activate multiple layers wiht activate_layers" do
+    ContextR::activate_layers :bar, :baz
+    ContextR::current_layers.should include(:foo)
+    ContextR::current_layers.should include(:bar)
+    ContextR::current_layers.should include(:baz)
+  end
+
+  it "should deactivate layers with activate_layers" do
+    ContextR::deactivate_layers :bar
+    ContextR::current_layers.should_not include(:bar)
+    ContextR::current_layers.should include(:foo)
+    ContextR::current_layers.should include(:baz)
+  end
+
+  it "should deactivate multiple layers wiht activate_layers" do
+    ContextR::deactivate_layers :foo, :baz
+    ContextR::current_layers.should_not include(:bar)
+    ContextR::current_layers.should_not include(:foo)
+    ContextR::current_layers.should_not include(:baz)
+  end
+end
