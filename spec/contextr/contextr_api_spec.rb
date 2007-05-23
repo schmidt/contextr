@@ -111,11 +111,17 @@ describe ContextR do
     end.should_not raise_error
   end
 
-  it "should allow the use of with_current_context and use the sensors to " +
-     "compute it" do
+  it "should allow trigger all sensors an fetch the results in " +
+     "sensored_context" do
     ContextR::add_context_sensor do
       [:bar]
     end
+    ContextR::sensored_context.should include(:foo)
+    ContextR::sensored_context.should include(:bar)
+  end
+
+  it "should allow the use of with_current_context and use the sensors to " +
+     "compute it" do
     lambda do
       ContextR::with_current_context do
         ContextR::current_layers.should include(:foo)

@@ -114,18 +114,24 @@ module ContextR
     end
 
     # asks all sensors to compute the current context, e.g. layers that should
-    # be active, and executes the given block in the context. It works basically
-    # like with_layers
+    # be active, and executes the given block in the context. It works
+    # like 
+    # <code>ContextR::with_layers(ContextR::sensored_context) { ... }</code>.
     # 
     # :call-seq:
     #   with_current_context() { ... }
     #
     def with_current_context(&block) 
-      layers = @sensors.inject([]) do | akku, sensor |
-        akku | sensor.call
-      end
-      ContextR::with_layers(*layers) do
+      ContextR::with_layers(*sensored_context) do
         block.call
+      end
+    end
+
+    # asks all registered context sensors to compute the current context. 
+    # Returns an Array of layer names, that should be activated.
+    def sensored_context
+      @sensors.inject([]) do | akku, sensor |
+        akku | sensor.call
       end
     end
 
