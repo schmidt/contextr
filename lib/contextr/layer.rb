@@ -145,16 +145,18 @@ module ContextR
       end
 
       def extended( object )
-        self.extended_objects ||= Hash.new do | cache, object |
+        self.extended_objects ||= SimpleWeakHash.new
+        ret = self.extended_objects[object]
+        if ret.nil? 
           object_class = if object.kind_of? Class
             (class << object; self; end)
           else
             object.class
           end
-          cache[ object ] = 
-              ExtendedObject.new( object, self.methods_of( object_class ) )
+          ret = ExtendedObject.new( object, self.methods_of( object_class ) )
+          self.extended_objects[ object ] = ret 
         end
-        self.extended_objects[object]
+        ret
       end
 
       def + other_layer
