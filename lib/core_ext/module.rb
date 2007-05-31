@@ -16,7 +16,7 @@ class Module
   #   C.namespace_free_name       # => "C"
   #
   def namespace_free_name
-    self.name.match( /(\w*?)$/ )[1]
+    self.name.match(/(\w*?)$/)[1]
   end
 
   # allows the definition of an attr_accessor with a setter, that is used
@@ -39,20 +39,20 @@ class Module
   # :call-seq:
   #   attr_accessor_with_default_setter(symbol, ...) { ... }
   #
-  def attr_accessor_with_default_setter( *syms ) 
+  def attr_accessor_with_default_setter(*syms) 
     raise 'Default value in block required' unless block_given?
     syms.each do | sym |
       module_eval do
-        attr_writer( sym )
-        define_method( sym ) do | |
+        attr_writer(sym)
+        define_method(sym) do | |
           class << self; self; end.class_eval do 
-            attr_reader( sym )
+            attr_reader(sym)
           end
 
           if instance_variables.include? "@#{sym}"
-            instance_variable_get( "@#{sym}" )
+            instance_variable_get("@#{sym}")
           else
-            instance_variable_set( "@#{sym}", yield )
+            instance_variable_set("@#{sym}", yield)
           end
         end
       end
