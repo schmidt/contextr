@@ -4,11 +4,11 @@ class SimpleWrapperClass
   def non_contextified_method
     "non_contextified_method"
   end
-  def pre_wrapped_method
-    "pre_wrapped_method"
+  def before_wrapped_method
+    "before_wrapped_method"
   end
-  def post_wrapped_method
-    "post_wrapped_method"
+  def after_wrapped_method
+    "after_wrapped_method"
   end
   def around_wrapped_method
     "around_wrapped_method"
@@ -16,11 +16,11 @@ class SimpleWrapperClass
 
   layer :simple_wrappers, :dummy
 
-  simple_wrappers.pre :pre_wrapped_method do
-    @pre_wrapped_method_called = true
+  simple_wrappers.before :before_wrapped_method do
+    @before_wrapped_method_called = true
   end
-  simple_wrappers.post :post_wrapped_method do
-    @post_wrapped_method_called = true
+  simple_wrappers.after :after_wrapped_method do
+    @after_wrapped_method_called = true
   end
   simple_wrappers.around :around_wrapped_method do | n |
     @around_wrapped_method_called = true
@@ -44,7 +44,7 @@ describe "An instance of a contextified class" do
     end
   end
 
-  %w{pre post around}.each do | qualifier |
+  %w{before after around}.each do | qualifier |
     it "should run a #{qualifier}-ed method " +
             "*normally* when all layers are deactivated" do
       @instance.send( "#{qualifier}_wrapped_method" ).should == 
@@ -94,14 +94,14 @@ class NestedLayerActivationClass
     @execution = []
   end
 
-  def preed_method
+  def beforeed_method
     @execution << "core"
-    "preed_method"
+    "beforeed_method"
   end
 
-  def posted_method
+  def aftered_method
     @execution << "core"
-    "posted_method"
+    "aftered_method"
   end
 
   def arounded_method
@@ -111,32 +111,32 @@ class NestedLayerActivationClass
 
   layer :outer_layer, :inner_layer
 
-  inner_layer.pre :preed_method do
+  inner_layer.before :beforeed_method do
     @execution << "inner_layer"
   end
 
-  outer_layer.pre :preed_method do
+  outer_layer.before :beforeed_method do
     @execution << "outer_layer"
   end
 
-  inner_layer.post :posted_method do
+  inner_layer.after :aftered_method do
     @execution << "inner_layer"
   end
 
-  outer_layer.post :posted_method do
+  outer_layer.after :aftered_method do
     @execution << "outer_layer"
   end
 
   inner_layer.around :arounded_method do | n |
-    @execution << "inner_layer_pre"
+    @execution << "inner_layer_before"
     n.call_next
-    @execution << "inner_layer_post"
+    @execution << "inner_layer_after"
   end
 
   outer_layer.around :arounded_method do | n |
-    @execution << "outer_layer_pre"
+    @execution << "outer_layer_before"
     n.call_next
-    @execution << "outer_layer_post"
+    @execution << "outer_layer_after"
   end
 
   def contextualized_method
@@ -144,16 +144,16 @@ class NestedLayerActivationClass
     "contextualized_method"
   end
 
-  layer :break_in_pre, :break_in_post, :break_in_around
+  layer :break_in_before, :break_in_after, :break_in_around
   layer :other_layer
 
-  break_in_pre.pre :contextualized_method do | n |
+  break_in_before.before :contextualized_method do | n |
     n.return_value = "contextualized_method"
-    @execution << "breaking_pre"
+    @execution << "breaking_before"
     n.break!
   end
-  break_in_post.post :contextualized_method do | n |
-    @execution << "breaking_post"
+  break_in_after.after :contextualized_method do | n |
+    @execution << "breaking_after"
     n.break!
   end
   break_in_around.around :contextualized_method do | n |
@@ -163,96 +163,96 @@ class NestedLayerActivationClass
     n.call_next
   end
 
-  other_layer.pre :contextualized_method do | n |
-    @execution << "other_pre"
+  other_layer.before :contextualized_method do | n |
+    @execution << "other_before"
   end
-  other_layer.post :contextualized_method do | n |
-    @execution << "other_post"
+  other_layer.after :contextualized_method do | n |
+    @execution << "other_after"
   end
   other_layer.around :contextualized_method do | n |
     @execution << "other_around"
     n.call_next
   end
 
-  layer :multiple_pres, :multiple_posts, :multiple_arounds
-  multiple_pres.pre :contextualized_method do
-    @execution << "first_pre"
+  layer :multiple_befores, :multiple_afters, :multiple_arounds
+  multiple_befores.before :contextualized_method do
+    @execution << "first_before"
   end
-  multiple_pres.pre :contextualized_method do
-    @execution << "second_pre"
+  multiple_befores.before :contextualized_method do
+    @execution << "second_before"
   end
 
-  multiple_posts.post :contextualized_method do
-    @execution << "first_post"
+  multiple_afters.after :contextualized_method do
+    @execution << "first_after"
   end
-  multiple_posts.post :contextualized_method do
-    @execution << "second_post"
+  multiple_afters.after :contextualized_method do
+    @execution << "second_after"
   end
 
   multiple_arounds.around :contextualized_method do | n |
-    @execution << "first_around_pre"
+    @execution << "first_around_before"
     n.call_next
-    @execution << "first_around_post"
+    @execution << "first_around_after"
   end
   multiple_arounds.around :contextualized_method do | n |
-    @execution << "second_around_pre"
+    @execution << "second_around_before"
     n.call_next
-    @execution << "second_around_post"
+    @execution << "second_around_after"
   end
 end
 
-pre_spec = lambda do | instance |
+before_spec = lambda do | instance |
   instance.execution.shift.should == "outer_layer"
   instance.execution.shift.should == "inner_layer"
   instance.execution.shift.should == "core"
 end
-post_spec = lambda do | instance |
+after_spec = lambda do | instance |
   instance.execution.shift.should == "core"
   instance.execution.shift.should == "inner_layer"
   instance.execution.shift.should == "outer_layer"
 end
 around_spec = lambda do | instance |
-  instance.execution.shift.should == "outer_layer_pre"
-  instance.execution.shift.should == "inner_layer_pre"
+  instance.execution.shift.should == "outer_layer_before"
+  instance.execution.shift.should == "inner_layer_before"
   instance.execution.shift.should == "core"
-  instance.execution.shift.should == "inner_layer_post"
-  instance.execution.shift.should == "outer_layer_post"
+  instance.execution.shift.should == "inner_layer_after"
+  instance.execution.shift.should == "outer_layer_after"
 end
 
-pre_break_spec = lambda do | instance |
-  instance.execution.shift.should == "breaking_pre"
+before_break_spec = lambda do | instance |
+  instance.execution.shift.should == "breaking_before"
 end
-post_break_spec = lambda do | instance |
-  instance.execution.shift.should == "other_pre"
+after_break_spec = lambda do | instance |
+  instance.execution.shift.should == "other_before"
   instance.execution.shift.should == "other_around"
   instance.execution.shift.should == "core"
-  instance.execution.shift.should == "other_post"
-  instance.execution.shift.should == "breaking_post"
+  instance.execution.shift.should == "other_after"
+  instance.execution.shift.should == "breaking_after"
 end
 around_break_spec = lambda do | instance |
-  instance.execution.shift.should == "other_pre"
+  instance.execution.shift.should == "other_before"
   instance.execution.shift.should == "breaking_around"
 end
 
-pre_multiple_spec = lambda do | instance |
-  instance.execution.shift.should == "first_pre"
-  instance.execution.shift.should == "second_pre"
+before_multiple_spec = lambda do | instance |
+  instance.execution.shift.should == "first_before"
+  instance.execution.shift.should == "second_before"
   instance.execution.shift.should == "core"
 end
-post_multiple_spec = lambda do | instance |
+after_multiple_spec = lambda do | instance |
   instance.execution.shift.should == "core"
-  instance.execution.shift.should == "second_post"
-  instance.execution.shift.should == "first_post"
+  instance.execution.shift.should == "second_after"
+  instance.execution.shift.should == "first_after"
 end
 around_multiple_spec = lambda do | instance |
-  instance.execution.shift.should == "first_around_pre"
-  instance.execution.shift.should == "second_around_pre"
+  instance.execution.shift.should == "first_around_before"
+  instance.execution.shift.should == "second_around_before"
   instance.execution.shift.should == "core"
-  instance.execution.shift.should == "second_around_post"
-  instance.execution.shift.should == "first_around_post"
+  instance.execution.shift.should == "second_around_after"
+  instance.execution.shift.should == "first_around_after"
 end
 
-%w{pre post around}.each do | qualifier |
+%w{before after around}.each do | qualifier |
   describe "#{qualifier.capitalize} wrappers within a method" do
     before do
       @instance = NestedLayerActivationClass.new

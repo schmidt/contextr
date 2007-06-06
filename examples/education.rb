@@ -31,11 +31,11 @@ end
 class Person
   layer :address, :education
 
-  address.post :to_s do | n |
+  address.after :to_s do | n |
     n.return_value += "; Address: #{address}"
   end
 
-  education.post :to_s do | n |
+  education.after :to_s do | n |
     n.return_value += ";\n[Education] #{university}"
   end
 end
@@ -43,29 +43,33 @@ end
 class University
   layer :address
 
-  address.post :to_s do | n |
+  address.after :to_s do | n |
     n.return_value += "; Address: #{address}"
   end
 end
 
+class Example
+  def initialize
+    hpi = University.new( "Hasso-Plattner-Institut", "Potsdam" )
+    somePerson = Person.new( "Gregor Schmidt", "Berlin", hpi )
 
-hpi = University.new( "Hasso-Plattner-Institut", "Potsdam" )
-somePerson = Person.new( "Gregor Schmidt", "Berlin", hpi )
-
-puts 
-puts somePerson
-ContextR::with_layers :education do
-  puts 
-  puts somePerson
-
-  ContextR::with_layers :address do
     puts 
-    puts somePerson
-
-    ContextR::without_layers :education do
+    somePerson.to_s
+    ContextR::with_layers :education do
       puts 
       puts somePerson
+
+      ContextR::with_layers :address do
+        puts 
+        puts somePerson
+
+        ContextR::without_layers :education do
+          puts 
+          puts somePerson
+        end
+      end
     end
+    puts 
   end
 end
-puts 
+Example.new

@@ -9,8 +9,8 @@ class A
 
     layer :foo
 
-    foo.post :a do | n | 
-      n.return_value << " post"
+    foo.after :a do | n | 
+      n.return_value << " after"
     end
   end
 end
@@ -21,9 +21,9 @@ end
 
 puts A.a    # => "a"
 ContextR::with_layer :foo do
-  puts A.a  # => "a post"
+  puts A.a  # => "a after"
 end
 ContextR::with_current_context do
-  puts A.a  # => "a post"
+  puts A.a  # => "a after"
 end
 puts A.a    # => "a"

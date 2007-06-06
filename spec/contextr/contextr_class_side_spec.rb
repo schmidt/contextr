@@ -5,11 +5,11 @@ class ContextRClassSide
     def non_contextified_method
       "non_contextified_method"
     end
-    def pre_wrapped_method
-      "pre_wrapped_method"
+    def before_wrapped_method
+      "before_wrapped_method"
     end
-    def post_wrapped_method
-      "post_wrapped_method"
+    def after_wrapped_method
+      "after_wrapped_method"
     end
     def around_wrapped_method
       "around_wrapped_method"
@@ -17,11 +17,11 @@ class ContextRClassSide
 
     layer :simple_wrappers, :dummy
 
-    simple_wrappers.pre :pre_wrapped_method do
-      @pre_wrapped_method_called = true
+    simple_wrappers.before :before_wrapped_method do
+      @before_wrapped_method_called = true
     end
-    simple_wrappers.post :post_wrapped_method do
-      @post_wrapped_method_called = true
+    simple_wrappers.after :after_wrapped_method do
+      @after_wrapped_method_called = true
     end
     simple_wrappers.around :around_wrapped_method do | n |
       @around_wrapped_method_called = true
@@ -45,7 +45,7 @@ describe "A contextified class" do
     end
   end
 
-  %w{pre post around}.each do | qualifier |
+  %w{before after around}.each do | qualifier |
     it "should run a #{qualifier}-ed method " +
             "*normally* when all layers are deactivated" do
       ContextRClassSide.send( "#{qualifier}_wrapped_method" ).should == 

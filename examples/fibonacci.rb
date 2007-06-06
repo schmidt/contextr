@@ -16,21 +16,21 @@ class Fibonacci
       end
     end
   
-    layer :fib_pre_post, :fib_wrap
+    layer :fib_before_after, :fib_around
     attr_accessor :cache
 
-    fib_pre_post.pre :compute do | nature |
+    fib_before_after.before :compute do | nature |
       self.cache ||= {}
       if self.cache.key? nature.arguments.first
         nature.break! self.cache[nature.arguments.first]
       end
     end
 
-    fib_pre_post.post :compute do | nature |
+    fib_before_after.after :compute do | nature |
       self.cache[nature.arguments.first] = nature.return_value
     end
     
-    fib_wrap.wrap :compute do | nature |
+    fib_around.around :compute do | nature |
       self.cache ||= {}
       if self.cache.key? nature.arguments.first
         nature.return_value = self.cache[nature.arguments.first]
@@ -82,10 +82,10 @@ class FibonacciTest < Test::Unit::TestCase
     end
   end
   
-  def test_layered_function_with_pre_post
+  def test_layered_function_with_before_after
     Benchmark.bm(20) do |x|
       x.report("Layered Pre/Post:") {
-        ContextR.with_layers :fib_pre_post do
+        ContextR.with_layers :fib_before_after do
           assert_equal       0, Fibonacci.compute(  0 )
           assert_equal       1, Fibonacci.compute(  1 )
           assert_equal       1, Fibonacci.compute(  2 )
@@ -102,10 +102,10 @@ class FibonacciTest < Test::Unit::TestCase
     end
   end
   
-  def test_layered_function_with_wrap
+  def test_layered_function_with_around
     Benchmark.bm(20) do |x|
       x.report("Layered Wrap:") {
-        ContextR.with_layers :fib_wrap do
+        ContextR.with_layers :fib_around do
           assert_equal       0, Fibonacci.compute(  0 )
           assert_equal       1, Fibonacci.compute(  1 )
           assert_equal       1, Fibonacci.compute(  2 )

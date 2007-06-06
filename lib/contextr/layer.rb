@@ -12,7 +12,7 @@ module ContextR
   #      "bar"
   #    end
   #
-  #    any.pre :bar do | n |
+  #    any.before :bar do | n |
   #      logger.info "Foo#bar called"
   #    end
   #  end
@@ -24,24 +24,24 @@ module ContextR
       self.layer = layer
     end
 
-    # Adds a pre-wrapper to a single method.
+    # Adds a before-wrapper to a single method.
     #
     # :call-seq:
-    #   pre(method_name) { | method_nature | ... }
+    #   before(method_name) { | method_nature | ... }
     #
-    def pre(method_name, &block)
-      layer.methods_of(self.contextualized_class)[method_name].pres << 
+    def before(method_name, &block)
+      layer.methods_of(self.contextualized_class)[method_name].befores << 
           block.to_unbound_method(self.contextualized_class)
       nil
     end
 
-    # Adds a post-wrapper to a single method
+    # Adds a after-wrapper to a single method
     #
     # :call-seq:
-    #   post(method_name) { | method_nature | ... }
+    #   after(method_name) { | method_nature | ... }
     #
-    def post(method_name, &block)
-      layer.methods_of(self.contextualized_class)[method_name].posts <<
+    def after(method_name, &block)
+      layer.methods_of(self.contextualized_class)[method_name].afters <<
           block.to_unbound_method(self.contextualized_class)
       nil
     end
@@ -56,8 +56,6 @@ module ContextR
           block.to_unbound_method(self.contextualized_class)
       nil
     end
-
-    alias :wrap :around
 
     # restrict a method to a single layer. Calling it will raise a
     # NoMethodError, if the given layer is inactive.
@@ -234,7 +232,7 @@ module ContextR
     attr_accessor :core
     attr_accessor :behaviour_cache
 
-    attr_accessor_with_default_setter :pres, :posts, :arounds do 
+    attr_accessor_with_default_setter :befores, :afters, :arounds do 
       Array.new
     end
     
@@ -245,8 +243,8 @@ module ContextR
 
     def + other_cm
       new_cm = ContextualizedMethod.new(self.core)
-      new_cm.pres    = self.pres    + other_cm.pres
-      new_cm.posts   = self.posts   + other_cm.posts
+      new_cm.befores = self.befores + other_cm.befores
+      new_cm.afters  = self.afters  + other_cm.afters
       new_cm.arounds = self.arounds + other_cm.arounds
       new_cm
     end
@@ -258,9 +256,9 @@ module ContextR
 
     def behaviour_name
       wrappers = []
-      wrappers << "pres" unless self.pres.empty?
+      wrappers << "befores" unless self.befores.empty?
       wrappers << "arounds" unless self.arounds.empty?
-      wrappers << "posts" unless self.posts.empty?
+      wrappers << "afters" unless self.afters.empty?
 
       "behaviour_" + (wrappers.empty? ? "without_wrappers" : 
                                          "with_" + wrappers.join("_and_"))
@@ -270,14 +268,14 @@ module ContextR
       self.core.bind(instance)
     end
 
-    def behaviour_with_pres(instance)
-      combined_pres = self.combine_pres(instance)
+    def behaviour_with_befores(instance)
+      combined_befores = self.combine_befores(instance)
       bound_core = self.bind_core(instance)
 
       lambda do | *arguments |
         nature = MethodNature.new(arguments, nil, false)
 
-        combined_pres.call(nature)
+        combined_befores.call(nature)
         unless nature.break
           bound_core.call(*nature.arguments)
         else
@@ -286,32 +284,32 @@ module ContextR
       end
     end
 
-    def behaviour_with_posts(instance)
+    def behaviour_with_afters(instance)
       bound_core = self.bind_core(instance)
-      combined_posts = self.combine_posts(instance)
+      combined_afters = self.combine_afters(instance)
 
       lambda do | *arguments |
         nature = MethodNature.new(arguments, nil, false)
 
         nature.return_value = bound_core.call(*arguments)
-        combined_posts.call(nature)
+        combined_afters.call(nature)
 
         nature.return_value
       end
     end
 
-    def behaviour_with_pres_and_posts(instance)
-      combined_pres = self.combine_pres(instance)
+    def behaviour_with_befores_and_afters(instance)
+      combined_befores = self.combine_befores(instance)
       bound_core = self.bind_core(instance)
-      combined_posts = self.combine_posts(instance)
+      combined_afters = self.combine_afters(instance)
 
       lambda do | *arguments |
         nature = MethodNature.new(arguments, nil, false)
 
-        combined_pres.call(nature)
+        combined_befores.call(nature)
         unless nature.break
           nature.return_value = bound_core.call(*nature.arguments)
-          combined_posts.call(nature)
+          combined_afters.call(nature)
         end
         nature.return_value
       end
@@ -333,15 +331,15 @@ module ContextR
       end
     end
 
-    def behaviour_with_pres_and_arounds(instance)
-      combined_pres = self.combine_pres(instance)
+    def behaviour_with_befores_and_arounds(instance)
+      combined_befores = self.combine_befores(instance)
       bound_core = self.bind_core(instance)
       bound_arounds = self.bind_arounds(instance)
 
       lambda do | *arguments |
         nature = MethodNature.new(arguments, nil, false) 
 
-        combined_pres.call(nature)
+        combined_befores.call(nature)
         unless nature.break
           working_arounds = bound_arounds.clone
           nature.block = around_block(nature, working_arounds, bound_core)
@@ -353,10 +351,10 @@ module ContextR
       end
     end
 
-    def behaviour_with_arounds_and_posts(instance)
+    def behaviour_with_arounds_and_afters(instance)
       bound_core = self.bind_core(instance)
       bound_arounds = self.bind_arounds(instance)
-      combined_posts = self.combine_posts(instance)
+      combined_afters = self.combine_afters(instance)
 
       lambda do | *arguments |
         working_arounds = bound_arounds.clone
@@ -366,22 +364,22 @@ module ContextR
         catch(:break_in_around) do
           working_arounds.shift.call(nature)
         end
-        combinded_posts.call(nature) unless nature.break
+        combinded_afters.call(nature) unless nature.break
 
         nature.return_value
       end
     end
 
-    def behaviour_with_pres_and_arounds_and_posts(instance)
-      combined_pres = self.combine_pres(instance)
+    def behaviour_with_befores_and_arounds_and_afters(instance)
+      combined_befores = self.combine_befores(instance)
       bound_core = self.bind_core(instance)
       bound_arounds = self.bind_arounds(instance)
-      combined_posts = self.combine_posts(instance)
+      combined_afters = self.combine_afters(instance)
 
       lambda do | *arguments |
         nature = MethodNature.new(arguments, nil, false) 
 
-        combined_pres.call(nature)
+        combined_befores.call(nature)
         unless nature.break
           working_arounds = bound_arounds.clone
           nature.block = around_block(nature, working_arounds, bound_core)
@@ -389,7 +387,7 @@ module ContextR
             working_arounds.shift.call(nature)
           end
           unless nature.break
-            combined_posts.call(nature)
+            combined_afters.call(nature)
           end
         end
         nature.return_value
@@ -398,11 +396,11 @@ module ContextR
 
 
     # helpers
-    def combine_pres(instance)
-      bound_pres = self.pres.collect { | p | p.bind(instance) }
+    def combine_befores(instance)
+      bound_befores = self.befores.collect { | p | p.bind(instance) }
       lambda do | nature |
-        bound_pres.each do | bound_pre |
-          bound_pre.call(nature)
+        bound_befores.each do | bound_before |
+          bound_before.call(nature)
           break if nature.break
         end
       end
@@ -427,11 +425,11 @@ module ContextR
       self.core.bind(instance)
     end
 
-    def combine_posts(instance)
-      bound_posts = self.posts.collect { | p | p.bind(instance) }
+    def combine_afters(instance)
+      bound_afters = self.afters.collect { | p | p.bind(instance) }
       lambda do | nature |
-        bound_posts.reverse.each do | bound_post |
-          bound_post.call(nature)
+        bound_afters.reverse.each do | bound_after |
+          bound_after.call(nature)
           break if nature.break
         end
         nature.return_value
