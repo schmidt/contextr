@@ -44,12 +44,13 @@ module ContextR
 
     def on_core_method_called(receiver, contextified_class, 
                               method_name, arguments, block)
-      methods = layers.collect do |layer|
-        layer.context_proxy(contextified_class, method_name)
+      proxies = []
+      layers.each do |layer|
+        proxies += layer.context_proxies(contextified_class, method_name)
       end.compact 
 
-      methods << core_proxy(receiver, contextified_class, method_name) 
-      call_methods_stack(methods.reverse, receiver, 
+      proxies << core_proxy(receiver, contextified_class, method_name) 
+      call_methods_stack(proxies.reverse, receiver, 
                          method_name, arguments, block)
     end
 

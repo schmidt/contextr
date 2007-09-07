@@ -20,8 +20,8 @@ class Student < Struct.new(:first_name, :last_name, :address, :university)
   end
 
   include Common
-  register EducationMethods => ContextR::EducationLayer
-  register AddressMethods => ContextR::AddressLayer
+  include EducationMethods => :education
+  include AddressMethods => :address
 end
 
 class University < Struct.new(:name, :address)
@@ -30,7 +30,7 @@ class University < Struct.new(:name, :address)
   end
 
   include Common
-  register AddressMethods => ContextR::AddressLayer
+  include AddressMethods => :address
 end
 
 module Fibonacci
@@ -64,9 +64,9 @@ module Fibonacci
   end
 
   self.extend(ClassMethods)
-  register :class_side => true,
-           ClassMethods::CacheMethods    => ContextR::CacheLayer,
-           ClassMethods::LoggingMethods  => ContextR::LoggingLayer
+  include :class_side => true,
+           ClassMethods::CacheMethods    => :cache,
+           ClassMethods::LoggingMethods  => :logging
 end
 
 puts

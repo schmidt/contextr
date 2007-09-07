@@ -9,7 +9,8 @@ module ContextR
       end
 
       def add_method_collection(contextified_class, methods_module)
-        definitions[contextified_class] = methods_module
+        definitions[contextified_class] ||= []
+        definitions[contextified_class] |= [methods_module]
         (methods_module.instance_methods & 
          contextified_class.instance_methods).each do | method_name |
           replace_core_method(contextified_class, method_name, 0)
@@ -17,31 +18,43 @@ module ContextR
         register_callbacks(contextified_class, methods_module)
       end
 
-      def context_proxy(contextified_class, method_name)
-        if definitions[contextified_class] and 
-           definitions[contextified_class].instance_methods.include?(
-                                                            method_name.to_s)
-          proxies[contextified_class] ||= begin
-            c = Class.new 
-            c.class_eval(%Q{
-              include ObjectSpace._id2ref(
-                    #{definitions[contextified_class].object_id})
-            }, __FILE__, __LINE__)
-            c.new
+      def methods_modules_containing_method(contextified_class, method_name)
+        if definitions.include?(contextified_class)
+          definitions[contextified_class].select do | methods_module | 
+            methods_module.instance_methods.include?(method_name.to_s) 
           end
+        else
+          []
+        end
+      end
+
+      def context_proxies(contextified_class, method_name)
+        methods_modules_containing_method(contextified_class, method_name).
+          collect do | methods_module | 
+            context_proxy_for_module(methods_module) 
+          end
+      end
+
+      def context_proxy_for_module(methods_module)
+        proxies[methods_module] ||= begin
+          c = Class.new 
+          c.class_eval(%Q{
+            include ObjectSpace._id2ref(#{methods_module.object_id})
+          }, __FILE__, __LINE__)
+          c.new
         end
       end
 
       def on_class_method_added(contextified_class, method_name, version)
-        if self.definitions[contextified_class].instance_methods.include?(
-                                                          method_name.to_s)
+        unless methods_modules_containing_method(contextified_class, 
+                                                 method_name).empty?
           replace_core_method(contextified_class, method_name, version)
         end
       end
 
       def on_wrapper_method_added(methods_module, method_name, version)
-        self.definitions.collect do | each_class, each_methods_module | 
-          if (each_methods_module == methods_module) 
+        self.definitions.collect do | each_class, each_methods_modules | 
+          if each_methods_modules.include?(methods_module)
             each_class
           end 
         end.compact.each do | contextified_class |
