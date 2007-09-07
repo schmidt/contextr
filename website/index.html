@@ -1,11 +1,116 @@
-<html>
-	<head>
-		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-		<title>contextr</title>
-		
-	</head>
-	<body id="body">
-		<p>This page has not yet been created for RubyGem <code>contextr</code></p>
-		<p>To the developer: To generate it, update website/index.txt and run the rake task <code>website</code> to generate this <code>index.html</code> file.</p>
-	</body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <link rel="stylesheet" href="stylesheets/screen.css" type="text/css" media="screen" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>
+      contextr
+  </title>
+  <script src="javascripts/rounded_corners_lite.inc.js" type="text/javascript"></script>
+<style>
+
+</style>
+  <script type="text/javascript">
+    window.onload = function() {
+      settings = {
+          tl: { radius: 10 },
+          tr: { radius: 10 },
+          bl: { radius: 10 },
+          br: { radius: 10 },
+          antiAlias: true,
+          autoPad: true,
+          validTags: ["div"]
+      }
+      var versionBox = new curvyCorners(settings, document.getElementById("version"));
+      versionBox.applyCornersToAll();
+    }
+  </script>
+</head>
+<body>
+<div id="main">
+
+    <h1>contextr</h1>
+    <div id="version" class="clickable" onclick='document.location = "http://rubyforge.org/projects/contextr"; return false'>
+      <p>Get Version</p>
+      <a href="http://rubyforge.org/projects/contextr" class="numbers">0.1.1</a>
+    </div>
+    <h1>&#x2192; &#8216;contextr&#8217;</h1>
+
+
+	<h2>What</h2>
+
+
+	<p><span class="caps">TODO</span></p>
+
+
+	<h2>Installing</h2>
+
+
+<pre syntax="ruby">sudo gem install contextr</pre>
+
+	<h2>The basics</h2>
+
+
+	<p>In your code use</p>
+
+
+<pre syntax="ruby">require 'rubygems' 
+require 'contextr'</pre>
+
+	<p>and ContextR will be ready to use.</p>
+
+
+	<h2>Demonstration of usage</h2>
+
+
+	<p>Please see the examples/ folder in the source distribution for example uses</p>
+
+
+	<h2>Forum</h2>
+
+
+	<p><a href="http://groups.google.com/group/contextr">http://groups.google.com/group/contextr</a></p>
+
+
+	<h2>Other resources</h2>
+
+
+	<ul>
+	<li><a href="http://contextr.rubyforge.org/contextr">ContextR <span class="caps">API</span> documentation</a></li>
+		<li><a href="http://rubyforge.org/projects/contextr">RubyForge Project Page</a></li>
+		<li><a href="http://www.swa.hpi.uni-potsdam.de/cop/"><span class="caps">COP</span> at <span class="caps">SWA</span> at the <span class="caps">HPI</span></a> More information on other context-oriented programming libaries as well as papers and theoretical work can be found at the <span class="caps">COP</span> page of Prof. Hirschfeld&#8217;s software architecture group at the <span class="caps">HPI</span></li>
+		<li><a href="http://www.nach-vorne.de">Author‘s Development Blog &#8211; The Ruby Ahead</a></li>
+		<li><a href="http://www.ohloh.net/projects/5037">ContextR Statistics on ohloh</a></li>
+	</ul>
+
+
+	<h2>How to submit patches</h2>
+
+
+	<p>Read the <a href="http://drnicwilliams.com/2007/06/01/8-steps-for-fixing-other-peoples-code/">8 steps for fixing other people&#8217;s code</a> and for section <a href="http://drnicwilliams.com/2007/06/01/8-steps-for-fixing-other-peoples-code/#8b-google-groups">8b: Submit patch to Google Groups</a>, use the Google Group above.</p>
+
+
+	<p>The trunk repository is <code>http://contextr.rubyforge.org/svn/trunk/</code> for anonymous access.</p>
+
+
+	<h2>License</h2>
+
+
+	<p>This code is free to use under the terms of the <a href="http://www.ruby-lang.org/en/LICENSE.txt">Ruby license</a>.</p>
+
+
+	<h2>Contact</h2>
+
+
+	<p>Comments are welcome. Send an email to <a href="mailto:ruby@schmidtwisser.de">Gregor Schmidt</a>.</p>
+    <p class="coda">
+      7th September 2007<br>
+      Theme extended from <a href="http://rb2js.rubyforge.org/">Paul Battley</a>
+    </p>
+</div>
+
+<!-- insert site tracking codes here, like Google Urchin -->
+
+</body>
 </html>
