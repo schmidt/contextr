@@ -1,4 +1,6 @@
-== 0.0.1 2007-06-20
+== 0.1.0 2007-09-07
 
-* 1 major enhancement:
-  * Initial release
+* major changes
+  * reimplemented the whole stack
+  * changed the API significantly
+  * no backwards compatibility at all

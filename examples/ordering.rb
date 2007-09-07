@@ -1,27 +1,29 @@
 require File.dirname(__FILE__) + "/../lib/contextr.rb"
 
-class Test
+class AnyClass
   def test
     puts "base_method"
   end
 
-  module FooMethods
+  module InnerMethods
     def test
-      puts "foo_pre"
+      puts "inner_pre"
       yield(:next)
-      puts "foo_post"
+      puts "inner_post"
     end
   end
-  module BarMethods
+  include InnerMethods => :test
+
+  module OuterMethods
     def test
-      puts "bar_pre"
+      puts "outer_pre"
       yield(:next)
-      puts "bar_post"
+      puts "outer_post"
     end
   end
-  include FooMethods => :test
-  include BarMethods => :test
+  include OuterMethods => :test
 end
+
 ContextR::with_layer :test do
-  Test.new.test
+  AnyClass.new.test
 end

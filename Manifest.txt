@@ -4,6 +4,7 @@ Manifest.txt
 README.txt
 Rakefile
 examples/general.rb
+examples/ordering.rb
 lib/contextr.rb
 lib/contextr/class_methods.rb
 lib/contextr/core_ext.rb

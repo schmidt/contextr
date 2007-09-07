@@ -5,7 +5,15 @@ h1. &#x2192; 'contextr'
 
 h2. What
 
-TODO
+This is the first release of ContextR after the 0.0.3 release. Since then a 
+full redesign took place. The API changed entirely so make sure to not use 
+this release with older code.
+
+We think, that the new API is more powerful and allows better code to be written
+with ContextR. Unfortunately it has some issues as well, but we consider them 
+as less relevant than the other way around. If you have any problems or question
+concerning these changes, feel free to use the new 
+"mailing list":http://groups.google.com/group/contextr - any hint is appreciated
 
 h2. Installing
 
@@ -31,7 +39,7 @@ h2. Forum
 
 h2. Other resources
 
-* "ContextR API documentation":http://contextr.rubyforge.org/contextr
+* "ContextR API documentation":http://contextr.rubyforge.org/rdoc
 * "RubyForge Project Page":http://rubyforge.org/projects/contextr
 * "COP at SWA at the HPI":http://www.swa.hpi.uni-potsdam.de/cop/ More information on other context-oriented programming libaries as well as papers and theoretical work can be found at the COP page of Prof. Hirschfeld's software architecture group at the HPI
 * "Author‘s Development Blog - The Ruby Ahead":http://www.nach-vorne.de

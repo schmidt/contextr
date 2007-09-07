@@ -32,7 +32,7 @@ module ContextR
         methods_modules_containing_method(contextified_class, method_name).
           collect do | methods_module | 
             context_proxy_for_module(methods_module) 
-          end
+          end.reverse
       end
 
       def context_proxy_for_module(methods_module)

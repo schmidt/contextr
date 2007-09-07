@@ -41,8 +41,8 @@ class Foo
     end
   end
 
-  register OneMethods => ContextR::OneLayer,
-           TwoMethods => ContextR::TwoLayer
+  include OneMethods => :one,
+          TwoMethods => :two
 end
 
 f = Foo.new
