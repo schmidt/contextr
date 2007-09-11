@@ -20,7 +20,7 @@ module ContextR
       layers = layer_symbols.collect do | layer_symbol |
         layer_by_symbol(layer_symbol)
       end
-      Dynamic.let({ :layers => Dynamic[:layers] | layers }, &block)
+      Dynamic.let({ :layers => Dynamic[:layers] - layers + layers }, &block)
     end
     alias with_layer with_layers
 

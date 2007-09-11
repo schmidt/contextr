@@ -15,7 +15,7 @@ module ContextR
     end
 
     def symbol_by_layer(lay)
-      lay.to_s.gsub( /^ContextR::(.*)Layer$/, '\1' ).underscore
+      lay.to_s.gsub( /^ContextR::(.*)Layer$/, '\1' ).underscore.to_sym
     end
 
     def layer_by_symbol(sym)
