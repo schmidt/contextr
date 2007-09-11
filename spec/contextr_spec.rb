@@ -95,9 +95,9 @@ describe "A contextified object" do
 
   it "should avoid double activation, but update ordering" do
     ContextR::with_layers :education, :address do
-      ContextR::layer_symbols.should == [:education, :address]
+      ContextR::active_layers.should == [:education, :address]
       ContextR::with_layer :education do
-        ContextR::layer_symbols.should == [:address, :education]
+        ContextR::active_layers.should == [:address, :education]
       end
     end
   end
@@ -199,5 +199,18 @@ describe "A method modules defining context dependent behaviour" do
         name
       end
     end
+  end
+end
+
+describe "ContextR" do
+  it "should provide a method to query for all active layers" do
+    ContextR::with_layer :log do
+      ContextR::active_layers.should == [:log]
+    end
+  end
+
+  it "should provide a method to query for all layers ever defined" do
+    ContextR::layers.sort_by{ |s| s.to_s }.should ==
+                                [:address, :education, :log, :multiple_modules]
   end
 end

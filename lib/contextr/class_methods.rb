@@ -1,5 +1,7 @@
 module ContextR
   module ClassMethods
+    include MutexCode
+
     def const_missing(const_name)
       if const_name.to_s =~ /.*Layer$/
         self.const_set(const_name, Class.new(ContextR::Layer))
@@ -12,6 +14,20 @@ module ContextR
       @stored_core_methods ||= Hash.new do | hash, key |
         hash[key] = Hash.new
       end
+    end
+
+    def active_layers_as_classes
+      Dynamic[:layers]
+    end
+
+    def layered_do(layers, block)
+      Dynamic.let({:layers => layers}, &block)
+    end
+
+    def layers_as_classes
+      constants.select { |l| l =~ /.+Layer$/ }.collect { |l| 
+        l.scan(/(.+)Layer/).first.first.underscore.to_sym
+      }
     end
 
     def symbol_by_layer(lay)
@@ -45,7 +61,7 @@ module ContextR
     def on_core_method_called(receiver, contextified_class, 
                               method_name, arguments, block)
       proxies = []
-      layers.each do |layer|
+      active_layers_as_classes.each do |layer|
         proxies += layer.context_proxies(contextified_class, method_name)
       end.compact 
 

@@ -1,14 +1,12 @@
 module ContextR
-  module ClassMethods
-    include MutexCode
-
+  module PublicApi 
     # allows the explicit activation of layers within a block context
     #
     #   ContextR::with_layers(:foo, :bar) do
-    #     ContextR::current_layers            # => [:default, :foo, :bar]
+    #     ContextR::active_layers            # => [:default, :foo, :bar]
     #
     #     ContextR::with_layers(:baz) do
-    #       ContextR::current_layers          # => [:default, :foo, :bar, :baz]
+    #       ContextR::active_layers          # => [:default, :foo, :bar, :baz]
     #     end
     #
     #   end
@@ -17,20 +15,20 @@ module ContextR
     #   with_layers(layer_name, ...) { ... }
     #
     def with_layers(*layer_symbols, &block)
-      layers = layer_symbols.collect do | layer_symbol |
+      layers = layer_symbols.collect do |layer_symbol|
         layer_by_symbol(layer_symbol)
       end
-      Dynamic.let({ :layers => Dynamic[:layers] - layers + layers }, &block)
+      layered_do(active_layers_as_classes - layers + layers, block)
     end
     alias with_layer with_layers
 
     # allows the explicit deactivation of layers within a block context
     # 
     #   ContextR::with_layers(:foo, :bar) do
-    #     ContextR::current_layers            # => [:default, :foo, :bar]
+    #     ContextR::active_layers            # => [:default, :foo, :bar]
     #
     #     ContextR::without_layers(:foo) do
-    #       ContextR::current_layers          # => [:default, :bar]
+    #       ContextR::active_layers          # => [:default, :bar]
     #     end
     #
     #   end
@@ -39,20 +37,24 @@ module ContextR
     #   without_layers(layer_name, ...) { ... }
     #
     def without_layers(*layer_symbols, &block)
-      layers = layer_symbols.collect do | layer_symbol |
+      layers = layer_symbols.collect do |layer_symbol|
         layer_by_symbol(layer_symbol)
       end
-      Dynamic.let({ :layers => Dynamic[:layers] - layers }, &block)
+      layered_do(active_layers_as_classes - layers, block)
     end
     alias without_layer without_layers
 
-    def layers
-      Dynamic[:layers]
+    # returns all currently active layers in their activation order
+    def active_layers
+      active_layers_as_classes.collect { |layer| symbol_by_layer(layer) }
     end
 
-    def layer_symbols
-      layers.collect { | layer | symbol_by_layer(layer) }
+    # returns all layers that where defined, but are not neccessarily active
+    def layers
+      layers_as_classes.collect { |layer| symbol_by_layer(layer) }
     end
+
   end
+  self.extend(PublicApi)
 end
 
