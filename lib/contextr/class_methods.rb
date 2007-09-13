@@ -78,6 +78,9 @@ module ContextR
     def observe_core_method(klass, method_name, version)
       only_once do
         klass.class_eval(%Q{
+            if self.instance_methods.include?("#{method_name}")
+              undef_method("#{method_name}")
+            end
             def #{method_name}(*arguments, &block)
               ContextR::on_core_method_called(
                 self,
