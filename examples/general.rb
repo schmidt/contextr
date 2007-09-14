@@ -64,9 +64,8 @@ module Fibonacci
   end
 
   self.extend(ClassMethods)
-  include :class_side => true,
-           ClassMethods::CacheMethods    => :cache,
-           ClassMethods::LoggingMethods  => :logging
+  self.extend ClassMethods::CacheMethods    => :cache,
+              ClassMethods::LoggingMethods  => :logging
 end
 
 puts

@@ -22,16 +22,25 @@ unless Object.const_defined?("ExampleTest")
         assert_equal(expected, actual.to_s)
       end
 
+      def result_of(object)
+        Result.new(object, self)
+      end
+
       def output_of(object)
         Output.new(object, self)
       end
 
-      class Output
+      class Result 
         attr_accessor :object, :test_class
         def initialize(object, test_class)
           self.object = object
           self.test_class = test_class 
         end
+        def ==(string)
+          test_class.assert_equal(string, object)
+        end
+      end
+      class Output < Result
         def ==(string)
           test_class.assert_equal(string, object.to_s)
         end
