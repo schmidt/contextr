@@ -1,0 +1,201 @@
+require File.dirname(__FILE__) + "/test_helper.rb"
+
+test_class(:TestDynamics)
+
+# One of the most powerful features of Ruby is the concept of open classes. At
+# everytime, the programmer is able to change class, instances and methods. 
+# This has immediate effects on all instances and works like a charm.
+#
+# One of the goals of ContextR 0.1.0 was to bring this power to the 
+# context-oriented abstraction. The following examples will simply demonstrate,
+# that it works. Not more, not less.
+
+class TrafficLight
+  def initialize
+    @state = 0
+  end
+
+  def state_ordering
+    @state_ordering ||= [:red, :yellow, :green, :yellow]
+  end
+
+  def current
+    state_ordering[@state]
+  end
+
+  def next
+    @state += 1
+    @state = 0 if @state >= state_ordering.size
+    current
+  end
+
+  def red
+    current == :red
+  end
+  def yellow 
+    current == :yellow
+  end
+  def green
+    current == :green
+  end
+  
+  def text
+    current.to_s
+  end
+end
+
+# Here we have a simple dutch traffic light. Let's test if it works.
+
+$traffic_light = TrafficLight.new
+example do
+  # It is always a good idea, to start with red
+  result_of($traffic_light.red) == true 
+
+  $traffic_light.next
+  result_of($traffic_light.yellow) == true 
+
+  $traffic_light.next
+  result_of($traffic_light.green) == true 
+
+  $traffic_light.next
+  result_of($traffic_light.yellow) == true
+
+  $traffic_light.next
+  result_of($traffic_light.red) == true
+end
+
+# But in Germany the lights work different. The sequence looks like the 
+# following
+#   red
+#   red and yellow
+#   green
+#   yellow
+#   red
+#
+# Let's build it with in an additional :german layer. All we need to do is
+# insert the new state ordering and change the red and yellow methods. They
+# should both return true, when the :red_and_yellow state is active.
+
+class TrafficLight
+  module GermanSequence
+    def state_ordering
+      @state_ordering ||= [:red, :red_and_yellow, :green, :yellow]
+    end
+
+    def red
+      (yield(:receiver).current == :red_and_yellow) or yield(:next)
+    end
+    def yellow 
+      (yield(:receiver).current == :red_and_yellow) or yield(:next)
+    end
+  end
+
+  include GermanSequence => :german
+end
+
+example do
+  ContextR::with_layer :german do
+    result_of($traffic_light.red) == true 
+
+    $traffic_light.next
+    result_of($traffic_light.red) == true 
+    result_of($traffic_light.yellow) == true 
+
+    $traffic_light.next
+    result_of($traffic_light.green) == true 
+
+    $traffic_light.next
+    result_of($traffic_light.yellow) == true
+
+    $traffic_light.next
+    result_of($traffic_light.red) == true
+  end
+end
+
+
+# Now we have a traffic light, that is able to work in the Netherlands and in 
+# Germany. But this is just the start. This example should show, that both
+# method modules and the base implementation may be changed at runtime and
+# the changes have immediate effect, just like they do in the basic ruby world.
+#
+# In this example would like to change the textual representation a bit. I
+# think they do not give much information. Let's change extend them. 
+
+example do
+  result_of($traffic_light.text) == "red"
+  class TrafficLight
+    def text
+      case @state
+      when 0 : "It's red. Stop immediately."
+      when 1 : "It's yellow. Prepare to start. It will be green soon."
+      when 2 : "It's green. Hit it."
+      when 3 : "It's yellow. Attention, it will be red soon. You better stop."
+      end
+    end
+  end
+  result_of($traffic_light.text) == "It's red. Stop immediately."
+end
+
+# Okay this works fine. But we also need to change it in case of the german
+# traffic light.
+
+example do
+  # The old behaviour
+  ContextR::with_layer :german do
+    $traffic_light.next
+    result_of($traffic_light.text) == 
+                        "It's yellow. Prepare to start. It will be green soon."
+  end
+
+  # It's redefinition
+  class TrafficLight
+    module GermanSequence
+      def text
+        if yield(:receiver).current == :red_and_yellow
+          "It's red and yellow at once. It will be green soon."
+        else
+          yield(:next)
+        end
+      end
+    end
+  end
+
+  # The new behaviour
+  ContextR::with_layer :german do
+    result_of($traffic_light.text) == 
+                          "It's red and yellow at once. It will be green soon."
+  end
+end
+
+# One could argue, that we did not actually change the implementation, but just
+# added a method. Okay. Then let's change this method and translate the text.
+# This is a german traffic light, right?
+
+example do
+  # The old behaviour
+  ContextR::with_layer :german do
+    result_of($traffic_light.text) == 
+                          "It's red and yellow at once. It will be green soon."
+  end
+
+  class TrafficLight
+    module GermanSequence
+      def text
+        case yield(:receiver).current
+        when :red : "Es ist rot. Anhalten."
+        when :red_and_yellow : "Es ist gelb und rot gleichzeitig."
+        when :green : "Grün. Gib Gas."
+        when :yellow : "Das ist gelb. Gleich ist es rot. Halt lieber an."
+        end
+      end
+    end
+  end
+
+  # The new behaviour
+  ContextR::with_layer :german do
+    result_of($traffic_light.text) == "Es ist gelb und rot gleichzeitig."
+  end
+end
+
+# This was just a simple demonstration, that all the dynamics that are within
+# Ruby are still present, when you are using ContextR. No need to worry.
