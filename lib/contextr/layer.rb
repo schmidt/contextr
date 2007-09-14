@@ -10,7 +10,9 @@ module ContextR
 
       def add_method_collection(contextified_class, methods_module)
         definitions[contextified_class] ||= []
-        definitions[contextified_class] |= [methods_module]
+        definitions[contextified_class].delete(methods_module)
+        definitions[contextified_class].push(methods_module)
+
         (methods_module.instance_methods & 
          contextified_class.instance_methods).each do | method_name |
           replace_core_method(contextified_class, method_name, 0)

@@ -1,0 +1,9 @@
+All documentation may be found in /test and /spec. The first contains written
+english and some embedded usage examples, the latter a specification written in
+RSpec.
+
+This allows the documentation to be executable and testable. Therefore it is 
+more likely that is in sync with the current development of the libary. This
+is all for your best.
+
+So just have a look at the files in test and you will see what I mean.
