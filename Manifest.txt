@@ -1,5 +1,6 @@
+COPYING.txt
 History.txt
-License.txt
+LICENSE.txt
 Manifest.txt
 README.txt
 Rakefile
@@ -29,8 +30,3 @@ test/test_helper.rb
 test/test_introduction.rb
 test/test_layer_state.rb
 test/test_ordering.rb
-website/index.html
-website/index.txt
-website/javascripts/rounded_corners_lite.inc.js
-website/stylesheets/screen.css
-website/template.rhtml

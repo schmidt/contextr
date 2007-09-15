@@ -33,12 +33,35 @@
     <h1>contextr</h1>
     <div id="version" class="clickable" onclick='document.location = "http://rubyforge.org/projects/contextr"; return false'>
       <p>Get Version</p>
-      <a href="http://rubyforge.org/projects/contextr" class="numbers">0.1.0</a>
+      <a href="http://rubyforge.org/projects/contextr" class="numbers">0.1.1</a>
     </div>
     <h1>&#x2192; &#8216;contextr&#8217;</h1>
 
 
 	<h2>What</h2>
+
+
+	<h3>Version 0.1.1</h3>
+
+
+	<p>In this release we have added code examples, that also act as tests. See <a href="http://www.contextr.org/2007/9/13/executable-code-in-usage-examples">this 
+blog article</a> 
+for more information. This brought vast feature coverage with test.</p>
+
+
+	<p>An RSpec was added to allow even more test coverage.</p>
+
+
+	<p><code>Module#extend</code> allows definition of class side context dependent behaviour.</p>
+
+
+	<p>There have been minor changes to the reflection <span class="caps">API</span>. To fetch the currently 
+active layers use <code>ContextR::active_layers</code> and you will get an array of symbols
+representing them. <code>ContextR::layers</code> gives all already defined layers, but they
+are not neccessarily active or have been.</p>
+
+
+	<h3>Version 0.1.0</h3>
 
 
 	<p>This is the first release of ContextR after the 0.0.3 release. Since then a 
@@ -65,6 +88,7 @@ concerning these changes, feel free to use the new
 
 
 <pre syntax="ruby">require 'rubygems' 
+gem 'contextr'
 require 'contextr'</pre>
 
 	<p>and ContextR will be ready to use.</p>
@@ -73,7 +97,9 @@ require 'contextr'</pre>
 	<h2>Demonstration of usage</h2>
 
 
-	<p>Please see the examples/ folder in the source distribution for example uses</p>
+	<p>Please see the <a href="http://contextr.rubyforge.org/svn/trunk/test/">test/</a> folder in 
+the source distribution for example uses. It contains good example coverage of 
+all the capabilities of ContextR.</p>
 
 
 	<h2>Forum</h2>
@@ -114,12 +140,17 @@ require 'contextr'</pre>
 
 	<p>Comments are welcome. Send an email to <a href="mailto:ruby@schmidtwisser.de">Gregor Schmidt</a>.</p>
     <p class="coda">
-      7th September 2007<br>
+      15th September 2007<br>
       Theme extended from <a href="http://rb2js.rubyforge.org/">Paul Battley</a>
     </p>
 </div>
 
-<!-- insert site tracking codes here, like Google Urchin -->
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+  _uacct = "UA-510991-4";
+  urchinTracker();
+</script>
 
 </body>
 </html>

@@ -124,6 +124,9 @@ end
 example do
   result_of($traffic_light.text) == "red"
   class TrafficLight
+    # When running these test with ruby -w the following line will raise a 
+    # warning, that you are discarding the old method definition. To avoid 
+    # these simply undefine it before defining a new implementation.
     def text
       case @state
       when 0 : "It's red. Stop immediately."
@@ -180,6 +183,9 @@ example do
 
   class TrafficLight
     module GermanSequence
+      # When running these test with ruby -w the following line will raise a 
+      # warning, that you are discarding the old method definition. To avoid 
+      # these simply undefine it before defining a new implementation.
       def text
         case yield(:receiver).current
         when :red : "Es ist rot. Anhalten."

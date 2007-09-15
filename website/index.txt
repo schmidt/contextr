@@ -2,8 +2,25 @@ h1. contextr
 
 h1. &#x2192; 'contextr'
 
-
 h2. What
+
+h3. Version 0.1.1
+
+In this release we have added code examples, that also act as tests. See "this 
+blog article":http://www.contextr.org/2007/9/13/executable-code-in-usage-examples 
+for more information. This brought vast feature coverage with test. 
+
+An RSpec was added to allow even more test coverage. 
+
+@Module#extend@ allows definition of class side context dependent behaviour.
+
+There have been minor changes to the reflection API. To fetch the currently 
+active layers use @ContextR::active_layers@ and you will get an array of symbols
+representing them. @ContextR::layers@ gives all already defined layers, but they
+are not neccessarily active or have been.
+
+
+h3. Version 0.1.0
 
 This is the first release of ContextR after the 0.0.3 release. Since then a 
 full redesign took place. The API changed entirely so make sure to not use 
@@ -24,6 +41,7 @@ h2. The basics
 In your code use
 
 <pre syntax="ruby">require 'rubygems' 
+gem 'contextr'
 require 'contextr'</pre>
 
 and ContextR will be ready to use.
@@ -31,7 +49,9 @@ and ContextR will be ready to use.
 
 h2. Demonstration of usage
 
-Please see the examples/ folder in the source distribution for example uses
+Please see the "test/":http://contextr.rubyforge.org/svn/trunk/test/ folder in 
+the source distribution for example uses. It contains good example coverage of 
+all the capabilities of ContextR.
 
 h2. Forum
 
