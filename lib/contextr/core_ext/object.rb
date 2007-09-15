@@ -1,4 +1,4 @@
-class Object
+class Object #:nodoc:
   def behavioural_class
     if self.kind_of?(Module)
       class << self; self; end

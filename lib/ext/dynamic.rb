@@ -9,7 +9,7 @@
 #
 # (c) 2005 - Christian Neukirchen - http://chneukirchen.org
 module Dynamic
-  class << self
+  module ClassMethods #:nodoc:
     Thread.main[:DYNAMIC] = Hash.new { |hash, key|
       raise NameError, "no such dynamic variable: #{key}"
     }
@@ -80,4 +80,5 @@ module Dynamic
       end
     end
   end
+  extend ClassMethods
 end

@@ -1,5 +1,5 @@
 require "thread"
-module MutexCode
+module MutexCode #:nodoc:
   def semaphore
     @semaphore ||= Mutex.new
   end

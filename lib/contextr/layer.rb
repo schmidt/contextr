@@ -1,5 +1,5 @@
-module ContextR
-  class Layer
+module ContextR # :nodoc:
+  class Layer # :nodoc: all
     module ClassMethods
       def definitions
         @definitions ||= {}

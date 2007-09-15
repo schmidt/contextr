@@ -1,4 +1,4 @@
-module UniqueId
+module UniqueId #:nodoc:
   def new_unique_id
     $id_semaphore ||= Mutex.new
     $id_semaphore.synchronize do

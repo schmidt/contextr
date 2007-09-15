@@ -1,5 +1,5 @@
-module ContextR
-  module ClassMethods
+module ContextR # :nodoc:
+  module ClassMethods # :nodoc:
     include MutexCode
 
     def const_missing(const_name)

@@ -1,5 +1,5 @@
 module ContextR
-  class EventMachine
+  class EventMachine # :nodoc: all
     module ClassMethods
       include UniqueId 
 
