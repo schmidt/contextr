@@ -1,6 +1,5 @@
 unless Object.const_defined? "ActiveSupport"
   class Module
-    protected
     # Encapsulates the common pattern of:
     #
     #   alias_method :foo_without_feature, :foo

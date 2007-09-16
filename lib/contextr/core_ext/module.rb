@@ -3,34 +3,55 @@
 # documentation by RDoc.
 #++
 Module.class_eval do
-  alias_method :extend_without_layers, :extend   
   alias_method :include_without_layers, :include 
 end
 
 class Module
-  def extend_with_layers(associations) # :nodoc:
-    klass = class << self; self; end
-    associations.each do | modul, layer |
-      ContextR::layer_by_symbol(layer).add_method_collection(klass, modul)
-    end
-  end
-
-  # TODO document extend
-  def extend(*args)
-    args.first.is_a?(Module) ? extend_without_layers(*args) : 
-                               extend_with_layers(*args)
-  end
-
-protected
+  protected
   def include_with_layers(associations) # :nodoc:
     associations.each do | modul, layer |
       ContextR::layer_by_symbol(layer).add_method_collection(self, modul)
     end
+    self
   end
 
-  # TODO document include 
+  # call-seq:
+  #    include(module, ...)    => self
+  #    include(module => layer_qualifier, ...)    => self
+  # 
+  # Invokes <code>Module.append_features</code> on each parameter in turn.
+  #
+  # If called with a hash, adds the module to the given layer. The behaviour 
+  # is associated with the class side of the object.
+  #
+  #    module Mod
+  #      def name
+  #        "Hello from #{yield(:next)}.\n"
+  #      end
+  #    end
+  #    
+  #    class Klass
+  #      def name
+  #        "Klass"
+  #      end
+  #
+  #      include Mod => :hello
+  #    end
+  #    
+  #    k = Klass.new
+  #    k.name                    #=> "Klass.\n"
+  #    ContextR::with_layer :hello do
+  #      k.name                  #=> "Hello from Klass.\n"
+  #    end
+  #    k.name                    #=> "Klass.\n"
+  #
   def include(*args)
     args.first.is_a?(Module) ? include_without_layers(*args) : 
                                include_with_layers(*args)
   end
+end
+
+Module.class_eval do
+  private :include
+  private :include_with_layers
 end
