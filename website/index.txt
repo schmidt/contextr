@@ -12,7 +12,7 @@ for more information. This brought vast feature coverage with test.
 
 An RSpec was added to allow even more test coverage. 
 
-@Module#extend@ allows definition of class side context dependent behaviour.
+@Object#extend@ allows definition of class side context dependent behaviour.
 
 There have been minor changes to the reflection API. To fetch the currently 
 active layers use @ContextR::active_layers@ and you will get an array of symbols
