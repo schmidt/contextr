@@ -65,7 +65,7 @@ require 'timeout'
 example do
   timeout_raised = false
   begin
-    Timeout::timeout(0.01) do
+    Timeout::timeout(0.05) do
       Fibonacci.compute(100)
     end
 
@@ -107,7 +107,7 @@ end
 example do
   timeout_raised = false
   begin
-    Timeout::timeout(0.01) do
+    Timeout::timeout(0.05) do
       ContextR::with_layer :cache do
         result_of(Fibonacci.compute(100)) == 354_224_848_179_261_915_075
       end
