@@ -3,16 +3,23 @@ require File.dirname(__FILE__) + '/../lib/contextr'
 
 unless Object.const_defined?("ExampleTest")
   module ExampleTest
+    module ClassMethods
+      attr_accessor :latest_test_class
+      attr_accessor :latest_test_case
+    end
+    extend ClassMethods
+
     module ObjectExtension
       def test_class(name)
-        $latest_test_class = Class.new(Test::Unit::TestCase)
-        $latest_test_case  = 0
-        Object.const_set(name, $latest_test_class) 
+        ExampleTest::latest_test_class = Class.new(Test::Unit::TestCase)
+        ExampleTest::latest_test_case  = 0
+        Object.const_set(name, ExampleTest::latest_test_class) 
       end
 
       def example(&block)
-        $latest_test_class.class_eval do
-          define_method("test_%03d" % ($latest_test_case += 1), &block)
+        ExampleTest::latest_test_class.class_eval do
+          define_method("test_%03d" % (ExampleTest::latest_test_case += 1), 
+                        &block)
         end
       end
     end

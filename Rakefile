@@ -107,8 +107,8 @@ task :website => [:website_generate, :website_upload, :publish_docs]
 desc 'Release the website and new gem version'
 task :deploy => [:check_version, :website, :release] do
   puts "Remember to create SVN tag:"
-  puts "svn copy svn+ssh://#{rubyforge_username}@rubyforge.org/var/svn/#{PATH}/trunk " +
-    "svn+ssh://#{rubyforge_username}@rubyforge.org/var/svn/#{PATH}/tags/REL-#{VERS} "
+  puts "svn copy svn+ssh://rubyforge.org/var/svn/#{PATH}/trunk " +
+    "svn+ssh://rubyforge.org/var/svn/#{PATH}/tags/contextr-#{VERS} "
   puts "Suggested comment:"
   puts "Tagging release #{CHANGES}"
 end
