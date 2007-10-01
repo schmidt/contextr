@@ -5,15 +5,3 @@
 # converted to tests, to make sure, that all documentation is in sync with
 # the implementation. You may find these documents in this directory. It is
 # just, that they do not look like test, but they are. Believe me.
-#
-# require File.dirname(__FILE__) + '/test_helper.rb'
-# 
-# class TestContextR < Test::Unit::TestCase
-# 
-#   def setup
-#   end
-#   
-#   def test_truth
-#     assert true
-#   end
-# end

@@ -1,0 +1,174 @@
+One of the most frequent examples for the use of aspect oriented programming
+is caching. You have a method, that takes some time to compute a result,
+but the result is always the same, if the parameters are the same. Such
+methods are often called functions. The have no side effects and do not depend
+on inner state.
+
+Perhaps you would like to attach caching to such functions. But only under
+certain circumstances. If your application lacks time, it is a good idea to
+activate result caching. If it lacks memory, it is a bad one.
+
+This perfectly sounds like a problem, that can be solved using 
+context-oriented programming.
+
+But for caching, we need a place to store the computed results. One could
+store them in the instance that computes them, but this would be strange,
+because, the code residing in it does not make direct use of this state.
+Perhaps we are using variables, that other methods use for their own
+purpose and this would result in strange results. We could use cryptic 
+instance variable names, but all this is just a workaround.
+
+What we want is to attach the state to the code, that uses it. This is the
+main idea of object-oriented design anyway. So ContextR gives you the 
+opportunity to save state inside your method modules. Code and state stay
+side by side. This state will reside there even after deactivating the
+layer, so you can reuse it. Perfect for our caching approach.
+
+
+Fibonacci numbers
+-----------------
+
+We will use the good old Fibonacci numbers to demonstrate our approach. First
+the simple recursive computation, that becomes really slow for larger numbers.
+I know that there is a non-recursive algorithm, working faster, but this 
+would not make such a good example. So just assume, that the following
+code is the fastest, you could possibly get.
+
+    module Fibonacci
+      module ClassMethods
+        def compute(fixnum)
+          if fixnum == 1 or fixnum == 0
+            fixnum
+          elsif fixnum < 0
+            raise ArgumentError, "Fibonacci not defined for negative numbers"
+          else
+            compute(fixnum - 1) + compute(fixnum - 2)
+          end
+        end
+      end
+      self.extend(ClassMethods)
+    end
+
+    example do
+      result_of(Fibonacci.compute(1)) == 1
+      result_of(Fibonacci.compute(2)) == 1
+      result_of(Fibonacci.compute(3)) == 2
+    end
+
+Just to make sure, that it is slow, I will try to compute Fib(100)
+
+    require 'timeout'
+    example do
+      timeout_raised = false
+      begin
+        Timeout::timeout(0.05) do
+          Fibonacci.compute(100)
+        end
+
+      rescue Timeout::Error
+        timeout_raised = true
+      end
+
+      result_of(timeout_raised) == true
+    end
+
+Okay, the 0.01 seconds are really impatient, but I know, that caching will 
+come to rescue and makes it happen.
+
+Let's define a simple caching method. If I already know the result, return
+it, if not, let the base implementation compute it and save the it into
+our variable.
+
+    module Fibonacci
+      module ClassMethods
+        module CacheMethods
+          def cache
+            @cache ||= {}
+          end
+
+          def compute(fixnum)
+            cache[fixnum] ||= yield(:next, fixnum)
+          end
+        end
+      end
+
+      extend ClassMethods::CacheMethods => :cache
+    end
+
+If you are not familiar with the above syntax, to define context dependent 
+behaviour, have a look at `test_class_side.rb`.
+
+Now let's compute Fib(100) again. Of course with caching enabled
+
+    example do
+      timeout_raised = false
+      begin
+        Timeout::timeout(0.05) do
+          ContextR::with_layer :cache do
+            result_of(Fibonacci.compute(100)) == 354_224_848_179_261_915_075
+          end
+        end
+
+      rescue Timeout::Error
+        timeout_raised = true
+      end
+
+      # This time the time out was not triggered
+      result_of(timeout_raised) == false 
+    end
+
+It is that simple to add state to your method modules. And just to make sure,
+that I did not cheat, I will add a simple case, were instance variables and
+layer specific variables _would_ conflict, but in fact don't.
+
+    class LayerStateExample
+      attr_accessor :state
+      module StateMethods
+        attr_accessor :state
+      end
+
+      include StateMethods => :test_layer_state
+    end
+
+When StateMethods would be included normally, its `attr_accessor` would simply
+be the same as in the class. But this does not happen, when using layers.
+
+Let's do a little warm up and make sure, everything works as expected.
+
+    $layer_state_example = LayerStateExample.new
+
+    example do
+      $layer_state_example.state = true
+      result_of($layer_state_example.state) == true
+      $layer_state_example.state = false 
+      result_of($layer_state_example.state) == false
+
+      ContextR::with_layer :test_layer_state do
+        $layer_state_example.state = true
+        result_of($layer_state_example.state) == true
+        $layer_state_example.state = false 
+        result_of($layer_state_example.state) == false
+      end
+    end
+
+Until now, I did not prove anything. Let's try it.
+
+    example do
+      # Set the state
+      $layer_state_example.state = true
+      ContextR::with_layer :test_layer_state do
+        $layer_state_example.state = false 
+      end
+
+      # And make sure, that they differ
+      result_of($layer_state_example.state) == true
+
+      ContextR::with_layer :test_layer_state do
+        result_of($layer_state_example.state) == false
+      end
+    end
+
+The last example was very theoretical and looks strange when seen isolated.
+Its main purpose is to show, that layer specific methods and base methods
+do not share their state, and that the layer specific state remains, also
+after layer deactivation. Don't take too serious.
