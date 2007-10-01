@@ -1,3 +1,3 @@
 require File.dirname(__FILE__) + "/test_helper.rb"
 
-LiterateMarukuTest.load("test_yield_next")
+LiterateMarukuTest.load(__FILE__)
