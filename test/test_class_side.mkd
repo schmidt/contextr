@@ -1,6 +1,3 @@
-    test_class(:TestClassSide)
-{: hide}
-
 In Ruby there are multiple ways of defining behaviour on the class side. That
 are messages that are send to the class, not on the instance. Class side 
 behaviour is often useful for functional methods, i.e. methods that do not

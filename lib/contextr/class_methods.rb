@@ -62,7 +62,9 @@ module ContextR # :nodoc:
                               method_name, arguments, block)
       proxies = []
       active_layers_as_classes.each do |layer|
-        proxies += layer.context_proxies(contextified_class, method_name)
+        proxies += layer.context_proxies(receiver, 
+                                         contextified_class, 
+                                         method_name)
       end.compact 
 
       proxies << core_proxy(receiver, contextified_class, method_name) 

@@ -30,16 +30,17 @@ module ContextR # :nodoc:
         end
       end
 
-      def context_proxies(contextified_class, method_name)
+      def context_proxies(receiver, contextified_class, method_name)
         methods_modules_containing_method(contextified_class, method_name).
           collect do | methods_module | 
-            context_proxy_for_module(methods_module) 
+            context_proxy_for_module(receiver, methods_module) 
           end.reverse
       end
 
-      def context_proxy_for_module(methods_module)
-        proxies[methods_module] ||= begin
-          c = Class.new 
+      def context_proxy_for_module(receiver, methods_module)
+        proxies[methods_module] ||= SimpleWeakHash.new
+        proxies[methods_module][receiver] ||= begin
+          c = Class.new(ContextR::InnerClass(receiver)) 
           c.class_eval(%Q{
             include ObjectSpace._id2ref(#{methods_module.object_id})
           }, __FILE__, __LINE__)
@@ -59,7 +60,9 @@ module ContextR # :nodoc:
           if each_methods_modules.include?(methods_module)
             each_class
           end 
-        end.compact.each do | contextified_class |
+        end.compact.select do |contextified_class|
+          contextified_class.instance_methods.include?(method_name.to_s)
+        end.each do | contextified_class |
           replace_core_method(contextified_class, method_name, 0)
         end
       end

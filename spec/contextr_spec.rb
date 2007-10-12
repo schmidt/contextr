@@ -209,7 +209,8 @@ describe "ContextR" do
   end
 
   it "should provide a method to query for all layers ever defined" do
-    ContextR::layers.sort_by{ |s| s.to_s }.should ==
-                                [:address, :education, :log, :multiple_modules]
+    [:address, :education, :log, :multiple_modules].each do |layer|
+      ContextR::layers.sort_by{ |s| s.to_s }.should include(layer)
+    end
   end
 end
