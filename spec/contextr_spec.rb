@@ -22,12 +22,11 @@ class Student < Struct.new(:name, :address, :education)
   include AddressMethods => :address
 
   module EducationMethods
+    in_layer :education
     def to_s
       "#{yield(:next)}, #{yield(:receiver).education}"
     end
   end
-
-  include EducationMethods => :education
 end
 
 class Ordering 
