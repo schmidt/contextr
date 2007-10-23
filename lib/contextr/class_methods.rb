@@ -2,14 +2,6 @@ module ContextR # :nodoc:
   module ClassMethods # :nodoc:
     include MutexCode
 
-    def const_missing(const_name)
-      if const_name.to_s =~ /.*Layer$/
-        self.const_set(const_name, Class.new(ContextR::Layer))
-      else
-        super
-      end
-    end
-
     def stored_core_methods
       @stored_core_methods ||= Hash.new do | hash, key |
         hash[key] = Hash.new
@@ -25,17 +17,15 @@ module ContextR # :nodoc:
     end
 
     def layers_as_classes
-      constants.select { |l| l =~ /.+Layer$/ }.collect { |l| 
-        l.scan(/(.+)Layer/).first.first.underscore.to_sym
-      }
+      @layers.values
     end
 
     def symbol_by_layer(lay)
-      lay.to_s.gsub( /^ContextR::(.*)Layer$/, '\1' ).underscore.to_sym
+      @layers.index(lay)
     end
 
     def layer_by_symbol(sym)
-      "ContextR::#{sym.to_s.camelize}Layer".constantize
+      @layers[sym] ||= ContextR::Layer.new
     end
 
     def call_methods_stack(stack, receiver, method_name, arguments, block)
@@ -105,6 +95,10 @@ module ContextR # :nodoc:
 
     def meta_method?(method_name)
       method_name.to_s =~ /method_added(_with(out)?_contextr_listener)?/
+    end
+
+    def self.extended(base)
+      base.instance_variable_set(:@layers, {})
     end
   end
   self.extend(ClassMethods)
