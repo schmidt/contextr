@@ -37,9 +37,8 @@ module ContextR # :nodoc:
     end
 
     def context_proxy_for_module(receiver, methods_module)
-      proxies[methods_module] ||= SimpleWeakHash.new
-      proxies[methods_module][receiver] ||= begin
-        c = Class.new(ContextR::InnerClass(receiver)) 
+      proxies[methods_module] ||= begin
+        c = Class.new
         c.class_eval(%Q{
           include ObjectSpace._id2ref(#{methods_module.object_id})
         }, __FILE__, __LINE__)

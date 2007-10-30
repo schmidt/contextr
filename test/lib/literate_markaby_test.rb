@@ -1,5 +1,5 @@
 require 'markaby'
-require 'ruby2ruby'
+require 'ruby2ruby' unless PLATFORM == "java"
 
 module LiterateMarkabyTest
   TARGET_DIR = File.dirname(__FILE__) + "/../../website/test/"
@@ -30,16 +30,20 @@ module LiterateMarkabyTest
 
   module MarkabyBuilderExtension
     attr_accessor :test_class, :latest_test_case
+    def pre_block(block)
+      self.pre(block.to_ruby.gsub(/^proc \{\n(.*)\n\}$/m, '\1'))
+    end
+
     def output(&block)
       block.call
-      self.pre(block.to_ruby.gsub(/^proc \{\n(.*)\n\}$/m, '\1'))
+      pre_block(block)
     end
     def example(&block)
       name = "test_%03d" % (self.latest_test_case += 1)
       test_class.class_eval do
         define_method(name, &block)
       end
-      self.pre(block.to_ruby.gsub(/^proc \{\n(.*)\n\}$/m, '\1'))
+      pre_block(block)
     end
   end
   
