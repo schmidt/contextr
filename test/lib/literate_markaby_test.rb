@@ -1,5 +1,12 @@
 require 'markaby'
-require 'ruby2ruby' unless PLATFORM == "java"
+if PLATFORM == "java"
+  class Markaby::Builder
+    def pre_block(block)
+    end
+  end
+else
+  require 'ruby2ruby'
+end
 
 module LiterateMarkabyTest
   TARGET_DIR = File.dirname(__FILE__) + "/../../website/test/"
