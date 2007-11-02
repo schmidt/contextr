@@ -4,7 +4,7 @@ module ContextR
       include UniqueId 
 
       def listeners 
-        @listeners ||= { :method_added => {} }
+        @listeners ||= {:method_added => {}}
       end
 
       def register(listener, callback, options)
@@ -20,8 +20,8 @@ module ContextR
 
       def on_method_added(modul, name)
         version = self.new_unique_id
-        self.listeners[:method_added][modul].each do | listener, method_name |
-          listener.send( method_name, modul, name, version )
+        self.listeners[:method_added][modul].to_a.each do |listener, method|
+          listener.send(method, modul, name, version)
         end 
       end
 
