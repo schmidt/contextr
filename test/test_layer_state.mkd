@@ -81,7 +81,7 @@ our variable.
 
     module Fibonacci
       module ClassMethods
-        module CacheMethods
+        in_layer :cache do
           def cache
             @cache ||= {}
           end
@@ -91,8 +91,6 @@ our variable.
           end
         end
       end
-
-      extend ClassMethods::CacheMethods => :cache
     end
 
 If you are not familiar with the above syntax, to define context dependent 
@@ -123,11 +121,9 @@ layer specific variables _would_ conflict, but in fact don't.
 
     class LayerStateExample
       attr_accessor :state
-      module StateMethods
+      in_layer :test_layer_state do
         attr_accessor :state
       end
-
-      include StateMethods => :test_layer_state
     end
 
 When StateMethods would be included normally, its `attr_accessor` would simply

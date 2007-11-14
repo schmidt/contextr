@@ -1,0 +1,44 @@
+This explanation is a bit tricky. First of all thread programming is always 
+tricky and then, testing threads to gain repeatable results makes it even less 
+readable.
+
+I tried to improve it by defining a little helper method called `step`. It shall
+test if all chunks are executed in the expected order and additionally check
+if the expected layers are activated. 
+
+    def step(index, *layers)
+      $step ||= 0
+      assert_equal(index, $step += 1)
+      assert_equal(layers, ContextR::active_layers)
+    end
+
+Layer activation shall be dynamically scoped. This is basically no problem, but
+it gets messy when doing thread programming and switching between scopes. The
+ugly part is done by Christian Neukirchen's dynamic.rb library.
+
+The following example does not demonstrate anything useful. It is just a more or
+less readable test. Follow the `step`s, if you want to get the execution order.
+As you may see, leaving the inner block in step 5 results in the "lost" layer 
+`:b` and it is "restored" in step 6. This is the base line of this test. All 
+the rest is support code.
+
+    example do
+      thread_block = lambda do
+        ContextR::with_layer :b do
+          step(3, :a, :b)
+          Thread.stop
+          step(5, :a, :b)
+        end
+      end
+
+      step(1)
+      ContextR::with_layer :a do
+        step(2, :a)
+        t = Thread.new(&thread_block)
+        step(4, :a)
+        t.run
+        step(6, :a)
+        t.join
+      end
+      step(7)
+    end

@@ -1,4 +1,4 @@
 require File.dirname(__FILE__) + "/test_helper.rb"
 
-test_class(:TestDynamics)
+test_class(:TestDynamicScope)
 LiterateMarukuTest.load(__FILE__)

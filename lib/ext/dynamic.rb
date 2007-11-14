@@ -65,9 +65,9 @@ module Dynamic
         save[key] = self[key]
         self[key] = value
       }
-      return_value = block.call
+      block.call
+    ensure
       variables.update save
-      return_value
     end
 
     def method_missing(name, *args)

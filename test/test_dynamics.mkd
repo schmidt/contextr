@@ -1,6 +1,3 @@
-    test_class(:TestDynamics)
-{: hide}
-
 One of the most powerful features of Ruby is the concept of open classes. At
 everytime, the programmer is able to change class, instances and methods. 
 This has immediate effects on all instances and works like a charm.
@@ -76,7 +73,7 @@ insert the new state ordering and change the red and yellow methods. They
 should both return true, when the :red_and_yellow state is active.
 
     class TrafficLight
-      module GermanSequence
+      in_layer :german do
         def state_ordering
           @state_ordering ||= [:red, :red_and_yellow, :green, :yellow]
         end
@@ -88,8 +85,6 @@ should both return true, when the :red_and_yellow state is active.
           (yield(:receiver).current == :red_and_yellow) or yield(:next)
         end
       end
-
-      include GermanSequence => :german
     end
 
     example do
@@ -151,7 +146,7 @@ traffic light.
 
       # It's redefinition
       class TrafficLight
-        module GermanSequence
+        in_layer :german do
           def text
             if yield(:receiver).current == :red_and_yellow
               "It's red and yellow at once. It will be green soon."
@@ -181,7 +176,7 @@ This is a german traffic light, right?
       end
 
       class TrafficLight
-        module GermanSequence
+        in_layer :german do
           # When running these test with ruby -w the following line will raise 
           # a warning, that you are discarding the old method definition. To 
           # avoid these simply undefine it before defining a new implementation.

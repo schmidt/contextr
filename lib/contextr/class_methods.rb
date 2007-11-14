@@ -3,8 +3,16 @@ module ContextR # :nodoc:
     include MutexCode
 
     def stored_core_methods
-      @stored_core_methods ||= Hash.new do | hash, key |
+      @stored_core_methods ||= Hash.new do |hash, key|
         hash[key] = Hash.new
+      end
+    end
+
+    def stored_module_definitions
+      @stored_module_definitions ||= Hash.new do |hash, key|
+        hash[key] = Hash.new do |hash, key|
+          hash[key] = Module.new
+        end
       end
     end
 
@@ -32,7 +40,7 @@ module ContextR # :nodoc:
       if stack.size == 1
         stack.pop.call(*arguments, &block)
       else
-        stack.pop.send(method_name, *arguments) do | action, *rest_args |
+        stack.pop.__send__(method_name, *arguments) do | action, *rest_args |
           case action
           when :receiver
             receiver

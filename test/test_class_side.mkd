@@ -1,8 +1,13 @@
+**TODO: Update to use new in\_layer API**
+
 In Ruby there are multiple ways of defining behaviour on the class side. That
-are messages that are send to the class, not on the instance. Class side 
+are messages that are send to the class, not to the instance. Class side 
 behaviour is often useful for functional methods, i.e. methods that do not
 rely on inner state and have no side effects. Mathematical functions have 
 these characteristics - that is where the name probably comes from.
+
+**Note**: Java programmers may know these methods as static. It is similar but 
+not exactly the same.
 
 
 Using `def self.method_name`
@@ -43,6 +48,9 @@ eigenclass principle for that. It will look like the following:
       result_of(SimpleMath.e) == 2.71828183 
     end
 
+**Note**: Eigenclasses are also known as *singleton class* or *meta class*. 
+I prefer eigenclass, because it not used with different meanings in other 
+contexts, which eases talking about it with experts in different languages.
 
 Using a module
 --------------
@@ -50,6 +58,8 @@ Using a module
 For even more encapsulation you could also use modules and extend the class 
 definition with them. I am using extend here on purpose. Module's include
 method adds the behaviour to the instance side, extend to the class side.
+Or to rephrase it: Module's include method adds the behaviour to instances, 
+extend to the class itself.
 
     class SimpleMath
       module ClassMethods
@@ -65,7 +75,7 @@ method adds the behaviour to the instance side, extend to the class side.
       result_of(SimpleMath.golden_ratio) == 1.6180339887 
     end
 
-The last method is e.g. often used in the web framework Ruby on Rails. Often
+The last method is e.g. used in the web framework Ruby on Rails. Often
 a variation of it is used to define class and instance side behaviour for
 mixin modules
 
@@ -82,7 +92,7 @@ mixin modules
       end
 
       def self.included(base)
-        base.send(:extend, ClassMethods)
+        base.extend ClassMethods
       end
     end
 
@@ -106,30 +116,32 @@ After we now know how to define class side behaviour, everybody is curious
 to know how to extend this behaviour using context-oriented programming and
 ContextR.
 
-Additionial, context-dependent behaviour is defined in modules. These modules
-are then attached to the class with a selector representing the layer, in
-which the behaviour should reside. For examples on the instance side
-have a look at the bottom of `test_introduction`.
+Additionial, context-dependent behaviour is defined in `in_layer` blocks. 
+These are then attached to the layer, in which the behaviour should reside. 
+For examples on the instance side have a look at the bottom of 
+`test_introduction`.
 
-Let's how we can achieve the same on the class side for each of the different
-methods of defining class side behaviour.
+Let's look how we can achieve the same on the class side for each of the 
+different methods of defining class side behaviour.
 
 
 Using `def self.method_name`
 ----------------------------
+
+**TODO: Allow def self.method\_name to add class side behaviour**
 
 Okay, we won't get rid of the modules, used to encapsulate the 
 context-dependent behaviour, so the extension is a bit noisier, than the 
 basic notation.
 
     class SimpleMath
-      module AccessControlMethods
-        def pi
-          "You are not allowed to access this method"
+      class << self
+        in_layer :access_control do
+          def pi
+            "You are not allowed to access this method"
+          end
         end
       end
-
-      extend AccessControlMethods => :access_control
     end
 
 But we can use the same principles, like we did for the instance side. Simply
@@ -148,25 +160,25 @@ layer.
 Using `class << self`
 ---------------------
 
-When your using the eigenclass, you are able to use to good old include to
-manage the extension. But nobody stops you if you fell in love with extend.
+When your using the eigenclass, you are able to use to good old in\_layer to
+manage the extension. 
 
     class SimpleMath
       class << self
-        module EnglishMethods
+        in_layer :english do
           def e
             "Euler's constant"
           end
         end
-        include EnglishMethods => :english
       end
 
-      module GermanMethods
-        def e
-          "Eulersche Zahl"
+      class << self
+        in_layer :german do
+          def e
+            "Eulersche Zahl"
+          end
         end
       end
-      extend GermanMethods => :german
     end
 
     example do
@@ -189,15 +201,15 @@ syntax to extend a class using in module for context-dependent behaviour. But
 for the sake of completeness, I will attach another example.
 
     class SimpleMath
-      module ExactComputationMethods
-        def golden_ratio
-          sleep(0.01) # In real life this would take a bit longer, 
-                      # but I don't have the time.
-          1.6180339887_4989484820_4586834365_6381177203_0917980576 
+      class << self
+        in_layer :exact_computation do
+          def golden_ratio
+            sleep(0.01) # In real life this would take a bit longer, 
+                        # but I don't have the time.
+            1.6180339887_4989484820_4586834365_6381177203_0917980576 
+          end
         end
       end
-
-      extend ExactComputationMethods => :exact_computation
     end
 
     example do
@@ -214,8 +226,9 @@ Conclusion
 ----------
 
 In general, there are two options to define context-dependent class side
-behaviour. Use include in the eigenclass or use extend anywhere else. Both
+behaviour. Use in\_layer in the eigenclass or use extend anywhere else. Both
 options result in the same behaviour, just like the different options in 
 plain ruby look different, but have the same effect.
 
 The programmer is free to use, whatever suites best. This is still Ruby.
+

@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/spec_helper.rb'
 
 module AddressMethods
   def to_s
-    "#{yield(:next)} (#{yield(:receiver).address})"
+    "#{super} (#{yield(:receiver).address})"
   end
 end
 
@@ -11,7 +11,9 @@ class University < Struct.new(:name, :address)
     name
   end
 
-  include AddressMethods => :address
+  in_layer :address do
+    include AddressMethods
+  end
 end
 
 class Student < Struct.new(:name, :address, :education)
@@ -19,34 +21,35 @@ class Student < Struct.new(:name, :address, :education)
     name
   end
 
-  include AddressMethods => :address
-
-  module EducationMethods
-    in_layer :education
+  in_layer :address do
+    include AddressMethods
+  end
+  in_layer :education do
     def to_s
-      "#{yield(:next)}, #{yield(:receiver).education}"
+      "#{super}, #{yield(:receiver).education}"
     end
   end
 end
 
 class Ordering 
-  def test
+  def inner_outer
     "base"
   end
 
   module InnerMethods
-    def test
-      "inner #{yield(:next)} inner"
+    def inner_outer 
+      "inner #{super} inner"
     end
   end
-  include InnerMethods => :multiple_modules
-
   module OuterMethods
-    def test
-      "outer #{yield(:next)} outer"
+    def inner_outer
+      "outer #{super} outer"
     end
   end
-  include OuterMethods => :multiple_modules
+  in_layer :multiple_modules do
+    include InnerMethods
+    include OuterMethods
+  end
 end
 
 
@@ -103,22 +106,26 @@ describe "A contextified object" do
 
   it "should also activate multiple modules per layer" do
     ContextR::with_layers :multiple_modules do
-      Ordering.new.test.should == "outer inner base inner outer"
+      Ordering.new.inner_outer.should == "outer inner base inner outer"
     end
   end
 
   it "should show new specific behaviour after changing module definitions" do
-    module Student::EducationMethods
-      def to_s
-        "#{yield(:next)} @ #{yield(:receiver).education}"
+    class Student
+      in_layer :education do
+        def to_s
+          "#{super} @ #{yield(:receiver).education}"
+        end
       end
     end
     ContextR::with_layer :education do
       @student.to_s.should == "Gregor Schmidt @ HPI"
     end
-    module Student::EducationMethods
-      def to_s
-        "#{yield(:next)}, #{yield(:receiver).education}"
+    class Student
+      in_layer :education do
+        def to_s
+          "#{super}, #{yield(:receiver).education}"
+        end
       end
     end
   end
@@ -148,14 +155,13 @@ describe "A method modules defining context dependent behaviour" do
 
   it "should have inner state" do
     class Student
-      module LogMethods
+      in_layer :log do
         def to_s
           @i ||= 0
           @i += 1
-          "#{@i}: #{yield(:next)}"
+          "#{@i}: #{super}"
         end
       end
-      include LogMethods => :log
     end
     ContextR::with_layer :log do
       @student.to_s.should == "1: Gregor Schmidt"
@@ -171,11 +177,11 @@ describe "A method modules defining context dependent behaviour" do
   
   it "should not lose its state after redefinition of the module" do
     class Student
-      module LogMethods
+      in_layer :log do
         def to_s
           @i ||= 0
           @i += 1
-          "(#{@i}) #{yield(:next)}"
+          "(#{@i}) #{super}"
         end
       end
     end
