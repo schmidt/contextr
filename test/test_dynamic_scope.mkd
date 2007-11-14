@@ -23,22 +23,32 @@ As you may see, leaving the inner block in step 5 results in the "lost" layer
 the rest is support code.
 
     example do
-      thread_block = lambda do
-        ContextR::with_layer :b do
-          step(3, :a, :b)
-          Thread.stop
-          step(5, :a, :b)
-        end
-      end
+      mutex = Mutex.new
 
       step(1)
       ContextR::with_layer :a do
         step(2, :a)
-        t = Thread.new(&thread_block)
-        step(4, :a)
-        t.run
+
+        a = Thread.new do
+          mutex.lock
+          ContextR::with_layer :b do
+            step(3, :a, :b)
+            mutex.unlock
+            sleep(0.1)
+            mutex.lock
+            step(5, :a, :b)
+          end
+        end
+
+        b = Thread.new do
+          mutex.lock
+          step(4, :a)
+          mutex.unlock
+        end
+
+        a.join
+        b.join
         step(6, :a)
-        t.join
       end
       step(7)
     end

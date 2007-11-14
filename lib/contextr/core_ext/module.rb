@@ -1,5 +1,4 @@
 class Module
-  protected
   #  Adds context-dependent behaviour to instances. 
   #
   #    class Klass
