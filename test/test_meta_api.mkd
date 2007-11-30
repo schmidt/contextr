@@ -1,0 +1,21 @@
+ContextR knows two basic reflection mechanisms. One is to query the currently
+active layers.
+
+    example do
+      ContextR::with_layer :a do
+        assert_equal([:a], ContextR::active_layers)
+        ContextR::with_layer :b do
+          assert_equal([:a, :b], ContextR::active_layers)
+        end
+        assert_equal([:a], ContextR::active_layers)
+      end
+    end
+
+The second is to query all layers, that where ever defined.
+
+    example do
+      assert(ContextR::layers.include?(:a))
+      assert(ContextR::layers.include?(:b))
+    end
+
+

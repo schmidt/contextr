@@ -1,4 +1,4 @@
 require File.dirname(__FILE__) + "/test_helper.rb"
 
-test_class(:TestYieldNext)
+test_class(:TestMetaApi)
 LiterateMarukuTest.load(__FILE__)

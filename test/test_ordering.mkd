@@ -8,7 +8,7 @@ this behaviour. Therefore I will use foo bar code. But I think it is still
 easy to get the message.
 
 I. Multiple active layers
-=========================
+-------------------------
 
 Define the basis first.
 
@@ -101,7 +101,7 @@ activation is hidden, but is restored again after leaving the block.
 
 
 II. Multiple modules per layer and class
-========================================
+----------------------------------------
 
 It is also possible to have more than one module define the context-dependent
 behaviour of a class. In this case it may also happen, that multiple modules
@@ -130,7 +130,7 @@ we include them into the same layer and see what happens.
 This time the last inclusion defines the outermost method. But this is just Ruby's way of (multiple) inheritance and not part of ContextR. For the same reason a second inclusion of `FooMethod`s will not update the execution order.
 
 III. Conclusion
-===============
+---------------
 
 These should be all case where ordering matters. If you are aware of the
 two basic rules, everything should work as expected. 

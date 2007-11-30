@@ -6,11 +6,6 @@ I tried to improve it by defining a little helper method called `step`. It shall
 test if all chunks are executed in the expected order and additionally check
 if the expected layers are activated. 
 
-    def step(index, *layers)
-      $step ||= 0
-      assert_equal(index, $step += 1)
-      assert_equal(layers, ContextR::active_layers)
-    end
 
 Layer activation shall be dynamically scoped. This is basically no problem, but
 it gets messy when doing thread programming and switching between scopes. The
@@ -23,31 +18,43 @@ As you may see, leaving the inner block in step 5 results in the "lost" layer
 the rest is support code.
 
     example do
+      def step(index, *layers)
+        @step ||= 0
+        assert_equal(index, @step += 1) if index
+        assert_equal(layers, ContextR::active_layers)
+      end
+
       mutex = Mutex.new
+
+      one_block = lambda do
+        mutex.lock
+        ContextR::with_layer :b do
+          step(3, :a, :b)
+          mutex.unlock
+          sleep(0.1)
+          mutex.lock
+          step(5, :a, :b)
+        end
+      end
+
+      two_block = lambda do
+        mutex.lock
+        step(4, :a)
+        mutex.unlock
+      end
 
       step(1)
       ContextR::with_layer :a do
         step(2, :a)
 
-        a = Thread.new do
-          mutex.lock
-          ContextR::with_layer :b do
-            step(3, :a, :b)
-            mutex.unlock
-            sleep(0.1)
-            mutex.lock
-            step(5, :a, :b)
-          end
-        end
+        one = Thread.new(&one_block) 
+        two = Thread.new(&two_block)
+        
+        step(nil, :a)
 
-        b = Thread.new do
-          mutex.lock
-          step(4, :a)
-          mutex.unlock
-        end
+        one.join
+        two.join
 
-        a.join
-        b.join
         step(6, :a)
       end
       step(7)

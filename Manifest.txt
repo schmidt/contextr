@@ -41,7 +41,7 @@ test/test_introduction.mkd
 test/test_introduction.rb
 test/test_layer_state.mkd
 test/test_layer_state.rb
+test/test_meta_api.mkd
+test/test_meta_api.rb
 test/test_ordering.mkd
 test/test_ordering.rb
-test/test_yield_next.mkd
-test/test_yield_next.rb

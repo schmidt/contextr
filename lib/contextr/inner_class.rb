@@ -40,7 +40,7 @@ module ContextR
     
     instance_methods.each { |m| hide(m) }
 
-    def method_missing(method_name, *rest_args, &block)
+    def method_missing(method_name, *rest_args)
       yield(:next, *rest_args)
     end
   end
