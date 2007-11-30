@@ -4,6 +4,12 @@ h1. &#x2192; 'contextr'
 
 h2. What
 
+h3. Version 0.1.9
+
+This is a review release. Again, lots of things changed, but I think to the 
+better. There will be more coverage with the 0.2.0. Until then, have a look at
+the shiny new online "documentation":/test/introduction.html
+
 h3. Version 0.1.1
 
 In this release we have added code examples, that also act as tests. See "this 
@@ -49,9 +55,8 @@ and ContextR will be ready to use.
 
 h2. Demonstration of usage
 
-Please see the "test/":http://contextr.rubyforge.org/svn/trunk/test/ folder in 
-the source distribution for example uses. It contains good example coverage of 
-all the capabilities of ContextR.
+See the "online documentation":/test/introduction.html for usage examples and
+some meta information or have a look at the other resources below.
 
 h2. Forum
 

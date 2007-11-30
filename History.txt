@@ -1,3 +1,11 @@
+== 0.1.9 2007-11-30
+
+* this is a review release
+  * documentation is not yet complete
+* major changes
+  * documentation website
+  * again a new api
+
 == 0.1.1 2007-09-17
 
 * major changes

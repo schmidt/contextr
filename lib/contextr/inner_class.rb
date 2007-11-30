@@ -1,5 +1,5 @@
 module ContextR
-  class InnerClass
+  class InnerClass # :nodoc:
     #--
     # Copyright 2004, 2006 by Jim Weirich (jim@weirichhouse.org).
     # All rights reserved.
