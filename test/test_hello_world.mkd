@@ -37,7 +37,7 @@ And what if down under changed its habbits? Let's redefine it.
       class MyApplication
         in_layer :au do
           def greet
-            yield(:next) + " and God Save the Queen"
+            super + " and God Save the Queen"
           end
         end
       end

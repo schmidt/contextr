@@ -37,13 +37,8 @@ module ContextR # :nodoc:
     end
 
     def context_proxy_for_module(receiver, methods_module)
-      proxies[methods_module] ||= begin
-        c = Class.new(ContextR::InnerClass)
-        c.class_eval(%Q{
-          include ObjectSpace._id2ref(#{methods_module.object_id})
-        }, __FILE__, __LINE__)
-        c.new
-      end
+      proxies[methods_module] ||=
+                              ContextR::InnerClass.new.extend(methods_module)
     end
 
     def on_class_method_added(contextified_class, method_name, version)

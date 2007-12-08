@@ -79,10 +79,10 @@ should both return true, when the :red_and_yellow state is active.
         end
 
         def red
-          (yield(:receiver).current == :red_and_yellow) or yield(:next)
+          (yield(:receiver).current == :red_and_yellow) or super 
         end
         def yellow 
-          (yield(:receiver).current == :red_and_yellow) or yield(:next)
+          (yield(:receiver).current == :red_and_yellow) or super 
         end
       end
     end
@@ -151,7 +151,7 @@ traffic light.
             if yield(:receiver).current == :red_and_yellow
               "It's red and yellow at once. It will be green soon."
             else
-              yield(:next)
+              super 
             end
           end
         end

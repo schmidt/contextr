@@ -87,7 +87,7 @@ our variable.
           end
 
           def compute(fixnum)
-            cache[fixnum] ||= yield(:next, fixnum)
+            cache[fixnum] ||= super 
           end
         end
       end
