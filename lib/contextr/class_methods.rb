@@ -45,12 +45,16 @@ module ContextR # :nodoc:
           when :receiver
             receiver
           when :block
-            block.call(*rest_args)
+            block
+          when :block=
+            block = rest_args.first
+          when :block_given?
+            !block.nil?
           when :next
             call_methods_stack(stack, receiver, method_name, rest_args, block)
           else 
-            raise ArgumentError.new("Use only :receiver, :block or :next " +
-                                    "as first argument.")
+            raise ArgumentError, "Use only :receiver, :block, :block_given?, " +
+                                 ":block= or :next as first argument."
           end
         end
       end
