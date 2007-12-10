@@ -27,16 +27,16 @@ module LiterateMarukuTest
   BASE_DIR = File.dirname(__FILE__) + "/../"
   TARGET_DIR = File.dirname(__FILE__) + "/../../website/test/"
 
-  def self.load(file)
+  def self.load(test)
     content = LiterateMaruku.require(
-                               BASE_DIR + "#{File.basename(file, '.rb')}.mkd", 
+                               BASE_DIR + "#{test}.mkd", 
                                :inline => true,
                                :attributes => {:execute => true})
 
     download = "http://rubyforge.org/projects/contextr"
     version = ContextR::VERSION::STRING 
     modified = Time.now 
-    sub_title = File.basename(file, '.rb').gsub("test_", "").titleize
+    sub_title = test.titleize
     
     doc = Markaby::Builder.new.xhtml_strict do
       head do
@@ -77,7 +77,7 @@ module LiterateMarukuTest
           end
 
           ul.navi! do
-            Dir[File.dirname(file) + "/test_*.mkd"].each do |mkd_file_name|
+            Dir[File.dirname(__FILE__) + "/../test_*.mkd"].each do |mkd_file_name|
               li do
                 name = File.basename(mkd_file_name, ".mkd").gsub("test_", "")
                 a name.titleize, :href => name + ".html" 
@@ -96,7 +96,7 @@ module LiterateMarukuTest
       end
     end
     File.open(TARGET_DIR + 
-            "#{File.basename(file, '.rb').gsub("test_", "")}.html", "w") do |f|
+            "#{test}.html", "w") do |f|
       f.puts(%q{<!DOCTYPE html
           PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">})
