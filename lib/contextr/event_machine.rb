@@ -52,20 +52,16 @@ module ContextR
       end
 
       def observe_method_added(modul)
-        modul.class_eval(%Q{
-          def self.method_added_with_contextr_listener(name)
-            ContextR::EventMachine::on_method_added(self, name)
-            method_added_without_contextr_listener(name)
-          end
-          unless self.methods.include? "method_added"
-            def self.method_added(name); end
-          end
-          class << self
-            alias_method_chain(:method_added, :contextr_listener)
-          end
-        }, __FILE__, __LINE__)
+        modul.extend(ContextRListener)
       end
     end
     self.extend(ClassMethods)
+
+    module ContextRListener
+      def method_added(name)
+        ContextR::EventMachine::on_method_added(self, name)
+        super
+      end
+    end
   end
 end

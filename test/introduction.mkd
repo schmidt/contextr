@@ -1,4 +1,4 @@
-Let's build a simple student's database. Each University has a name and 
+Let's build a simple students database. Each University has a name and 
 address. Each student has a name, address and an associated university.
 
 We are using a `Struct` to build our classes in an easy way. This provides 
