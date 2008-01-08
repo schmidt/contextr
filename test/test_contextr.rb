@@ -8,7 +8,7 @@
 require File.dirname(__FILE__) + "/test_helper.rb"
 
 %w(class_side dynamic_scope dynamics hello_world introduction
-   layer_state meta_api ordering restrictions).each do |test|
+   layer_state meta_api method_missing ordering restrictions).each do |test|
   test_class("test_#{test}".camelcase.to_sym)
   LiterateMarukuTest.load(test)
 end

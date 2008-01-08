@@ -40,7 +40,7 @@ module ContextR # :nodoc:
       if stack.size == 1
         stack.pop.call(*arguments, &block)
       else
-        stack.pop.__send__(method_name, *arguments) do | action, *rest_args |
+        stack.pop.__send__(method_name, *arguments) do |action, *rest_args|
           case action
           when :receiver
             receiver
@@ -51,6 +51,7 @@ module ContextR # :nodoc:
           when :block_given?
             !block.nil?
           when :next
+            rest_args.shift if method_name != :method_missing
             call_methods_stack(stack, receiver, method_name, rest_args, block)
           else 
             raise ArgumentError, "Use only :receiver, :block, :block_given?, " +

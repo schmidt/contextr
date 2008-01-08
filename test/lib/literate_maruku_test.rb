@@ -9,10 +9,10 @@ class Fixnum
     return 'th' if (10..19).include?(self % 100)
     # others
     case self % 10
-    when 1: return 'st'
-    when 2: return 'nd'
-    when 3: return 'rd'
-    else    return 'th'
+    when 1 then return 'st'
+    when 2 then return 'nd'
+    when 3 then return 'rd'
+    else        return 'th'
     end
   end
 end

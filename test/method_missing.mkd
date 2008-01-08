@@ -1,0 +1,40 @@
+It is used in ContextR as well, and its
+redefinition is simple, The functionality of method missing is 
+one of the core ingredients of cleanly designed Ruby programs, it is still 
+possible to extend it with context-dependent behaviour.
+
+The following code will show the right usage.
+
+    class MethodMissingExample
+      def method_missing(*a)
+        "base"
+      end
+
+      in_layer :one do
+        def method_missing(*a, &b)
+          "pre_one " + super
+        end
+      end
+      in_layer :two do
+        def method_missing(*a, &b)
+          super + " post_two"
+        end
+      end
+    end
+
+    example do
+      instance = MethodMissingExample.new
+      result_of(instance.any_method) == "base"
+
+      ContextR::with_layer :one do
+        result_of(instance.any_method) == "pre_one base"
+      end
+      ContextR::with_layer :two do
+        result_of(instance.any_method) == "base post_two"
+      end
+
+      ContextR::with_layer :one, :two do
+        result_of(instance.any_method) == "pre_one base post_two"
+      end
+    end
+
