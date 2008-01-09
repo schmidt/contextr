@@ -6,7 +6,6 @@ Inspired by ContextL (Pascal Costanza) and ContextS (Robert Hirschfeld) with
 thanks to Christian Neukirchen for giving the name and lots of ideas.
 
 For more information see 
-- http://contextr.rubyforge.org/
 - http://www.contextr.org/ or 
 - http://www.swa.hpi.uni-potsdam.de/cop/
 
