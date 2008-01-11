@@ -29,11 +29,11 @@ the rest is support code.
       one_block = lambda do
         mutex.lock
         ContextR::with_layer :b do
-          step(3, :a, :b)
+          step(3, :b, :a)
           mutex.unlock
           sleep(0.1)
           mutex.lock
-          step(5, :a, :b)
+          step(5, :b, :a)
         end
       end
 

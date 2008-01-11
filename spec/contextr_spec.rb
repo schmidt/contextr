@@ -77,19 +77,19 @@ describe "A contextified object" do
   end
 
   it "should show specific behaviour down the whole stack for all layers" do
-    ContextR::with_layers :education, :address do
+    ContextR::with_layers :address, :education do
       @student.to_s.should == "Gregor Schmidt (Berlin), HPI (Potsdam)"
     end
   end
 
   it "should take care of layer activation odering" do
-    ContextR::with_layers :education do
-      ContextR::with_layers :address do
+    ContextR::with_layers :address do
+      ContextR::with_layers :education do
         @student.to_s.should == "Gregor Schmidt (Berlin), HPI (Potsdam)"
       end
     end
-    ContextR::with_layers :address do
-      ContextR::with_layers :education do
+    ContextR::with_layers :education do
+      ContextR::with_layers :address do
         @student.to_s.should == "Gregor Schmidt, HPI (Potsdam) (Berlin)"
       end
     end
@@ -97,9 +97,9 @@ describe "A contextified object" do
 
   it "should avoid double activation, but update ordering" do
     ContextR::with_layers :education, :address do
-      ContextR::active_layers.should == [:education, :address]
+      ContextR::active_layers.should == [:address, :education]
       ContextR::with_layer :education do
-        ContextR::active_layers.should == [:address, :education]
+        ContextR::active_layers.should == [:education, :address]
       end
     end
   end

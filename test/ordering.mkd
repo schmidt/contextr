@@ -50,25 +50,25 @@ determines the order of execution.
         result_of(instance.test_method) == "bar_before base_method bar_after"
       end
 
-      ContextR::with_layer :bar, :foo do
+      ContextR::with_layer :foo, :bar do
         result_of(instance.test_method) == 
                         "bar_before foo_before base_method foo_after bar_after"
       end
 
-      ContextR::with_layer :bar do
-        ContextR::with_layer :foo do
+      ContextR::with_layer :foo do
+        ContextR::with_layer :bar do
           result_of(instance.test_method) == 
                         "bar_before foo_before base_method foo_after bar_after"
         end
       end
 
-      ContextR::with_layer :foo, :bar do
+      ContextR::with_layer :bar, :foo do
         result_of(instance.test_method) == 
                         "foo_before bar_before base_method bar_after foo_after"
       end
 
-      ContextR::with_layer :foo do
-        ContextR::with_layer :bar do
+      ContextR::with_layer :bar do
+        ContextR::with_layer :foo do
           result_of(instance.test_method) == 
                         "foo_before bar_before base_method bar_after foo_after"
         end
@@ -85,11 +85,11 @@ activation is hidden, but is restored again after leaving the block.
     example do
       instance = OrderingTest.new
 
-      ContextR::with_layer :bar, :foo do
+      ContextR::with_layer :foo, :bar do
         result_of(instance.test_method) == 
                         "bar_before foo_before base_method foo_after bar_after"
 
-        ContextR::with_layer :bar do
+        ContextR::with_layer :foo do
           result_of(instance.test_method) == 
                         "foo_before bar_before base_method bar_after foo_after"
         end

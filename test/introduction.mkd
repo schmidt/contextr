@@ -283,7 +283,7 @@ options. You may activate the two one after the other or all at once. It
 is just a matter of taste, the result remains the same.
 
     example do
-      ContextR.with_layer :believe, :location do 
+      ContextR.with_layer :location, :believe do 
         output_of($the_pope) == "Benedikt XVI (Bavaria); Christianity (Israel)"
       end
     end
@@ -296,8 +296,8 @@ If you change your mind within your call stack, you may of course
 deactivate layers again.
 
     example do
-      ContextR.with_layer :believe do 
-        ContextR::with_layer :location do
+      ContextR::with_layer :location do
+        ContextR.with_layer :believe do 
           output_of($the_pope) == 
                               "Benedikt XVI (Bavaria); Christianity (Israel)"
 

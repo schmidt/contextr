@@ -5,7 +5,7 @@ active layers.
       ContextR::with_layer :a do
         assert_equal([:a], ContextR::active_layers)
         ContextR::with_layer :b do
-          assert_equal([:a, :b], ContextR::active_layers)
+          assert_equal([:b, :a], ContextR::active_layers)
         end
         assert_equal([:a], ContextR::active_layers)
       end

@@ -17,8 +17,8 @@ module ContextR
     def with_layers(*layer_symbols, &block)
       layers = layer_symbols.collect do |layer_symbol|
         layer_by_symbol(layer_symbol)
-      end
-      layered_do(active_layers_as_classes - layers + layers, block)
+      end.reverse
+      layered_do(layers | active_layers_as_classes, block)
     end
     alias with_layer with_layers
 
