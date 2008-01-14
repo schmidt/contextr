@@ -1,6 +1,7 @@
 gem "literate_maruku"
 require "literate_maruku"
 require 'markaby'
+require 'maruku'
 require 'active_support'
 
 class Fixnum

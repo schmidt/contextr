@@ -51,7 +51,7 @@ module ContextR # :nodoc:
           when :block_given?
             !block.nil?
           when :next
-            rest_args.shift if method_name != :method_missing
+            rest_args.shift unless method_name == :method_missing
             call_methods_stack(stack, receiver, method_name, rest_args, block)
           else 
             raise ArgumentError, "Use only :receiver, :block, :block_given?, " +

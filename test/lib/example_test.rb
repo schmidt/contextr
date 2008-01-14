@@ -12,11 +12,11 @@ module ExampleTest
       Object.const_set(name, ExampleTest::latest_test_class) 
     end
 
-    def example(&block)
+    def example(version = RUBY_VERSION, &block)
       ExampleTest::latest_test_class.class_eval do
         define_method("test_%03d" % (ExampleTest::latest_test_case += 1), 
                       &block)
-      end
+      end if RUBY_VERSION =~ Regexp.new(version.to_s)
     end
   end
   
