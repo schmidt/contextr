@@ -95,6 +95,7 @@ module LiterateMarukuTest
         end
       end
     end
+    Dir.mkdir(TARGET_DIR) unless File.exist?(TARGET_DIR)
     File.open(TARGET_DIR + 
             "#{test}.html", "w") do |f|
       f.puts(%q{<!DOCTYPE html
