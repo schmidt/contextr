@@ -9,9 +9,9 @@ module ContextR # :nodoc:
     end
 
     def stored_module_definitions
-      @stored_module_definitions ||= Hash.new do |hash, key|
-        hash[key] = Hash.new do |hash, key|
-          hash[key] = Module.new
+      @stored_module_definitions ||= Hash.new do |layer_hash, layer|
+        layer_hash[layer] = Hash.new do |extended_modules_hash, x_module|
+          extended_modules_hash[x_module] = Module.new
         end
       end
     end

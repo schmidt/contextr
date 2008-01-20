@@ -27,10 +27,13 @@ class Module
   def in_layer(layer_symbol, &block)
     extension = ContextR::stored_module_definitions[layer_symbol][self]
 
-    extension.module_eval(&block) if block_given?
+    if block_given?
+      extension.module_eval(&block) 
+    end
 
     ContextR::layer_by_symbol(layer_symbol).add_method_collection(self, 
                                                                   extension) 
-    extension
+
+    extension unless block_given?
   end
 end
