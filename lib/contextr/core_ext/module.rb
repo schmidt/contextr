@@ -32,6 +32,6 @@ class Module
     ContextR::layer_by_symbol(layer_symbol).add_method_collection(self, 
                                                                   extension) 
 
-    block_given? ? extension : return_value
+    block_given? ? return_value : extension
   end
 end

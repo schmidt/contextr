@@ -44,10 +44,11 @@ As already mentioned, ContextR uses a block to pass parameters to each layered
 method. This implies, that methods, expecting a block, cannot easily access it.
 
 But this is only partially true. Every method in a layered stack may access it
-simply by calling `yield(:block)`. Of course, you should test, if a block was
-given with `yield(:block_given?)`. It is also possible to pass a new block to
-subsequent calls, but that is not to easy, since it is not possible to pass a 
-block as argument to a block. But again, there is a slightly ugly workaround.
+simply by calling `yield(:block)` or execute it with `yield(:block!)`. Of 
+course, you should test, if a block was given with `yield(:block_given?)`. It 
+is also possible to pass a new block to subsequent calls, but that is not to 
+easy, since it is not possible to pass a block as argument to a block. But 
+again, there is a slightly ugly workaround.
 
 All this may be observed in the following artificial example.
 
@@ -92,7 +93,7 @@ example is not to useful, but I needed anything to explain some things.
           if yield(:block_given?)
             yield(:receiver).name_methods.each do |name|
               king = yield(:receiver).send(name)
-              yield(:block).call("<strong>#{king}</strong>")
+              yield(:block!, "<strong>#{king}</strong>")
             end
           else
             raise ArgumentError, "No block given"
@@ -132,7 +133,9 @@ looks so ugly. I would be happy, if I would know a nicer way.
           end
 
           yield(:block=, new_block)
+
           return_value = super
+
           yield(:block=, old_block)
 
           return_value
