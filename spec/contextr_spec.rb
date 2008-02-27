@@ -52,6 +52,25 @@ class Ordering
   end
 end
 
+class ExceptionExample
+  def secure
+    insecure
+  rescue RuntimeError
+    "caught in secure method"
+  end
+
+  def insecure
+    raise "insecure action failed"
+  end
+
+  in_layer :security do
+    def insecure
+      super
+    rescue RuntimeError
+      "caught in security layer"
+    end
+  end
+end
 
 describe "A contextified object" do
   before do
@@ -217,6 +236,19 @@ describe "ContextR" do
   it "should provide a method to query for all layers ever defined" do
     [:address, :education, :log, :multiple_modules].each do |layer|
       ContextR::layers.sort_by{ |s| s.to_s }.should include(layer)
+    end
+  end
+end
+
+describe "ContextR" do
+  it "should propagate exceptions into outer layers first" do
+
+    instance = ExceptionExample.new
+
+    instance.secure.should == "caught in secure method"
+
+    ContextR::with_layer :security do
+      instance.secure.should == "caught in security layer"
     end
   end
 end

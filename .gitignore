@@ -2,3 +2,4 @@ website/test
 pkg
 doc
 *.rbc
+.DS_Store
