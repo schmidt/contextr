@@ -2,11 +2,4 @@ Next Release 0.2:
 - check cache invalidation, when method are redefined in layers
 Future Release 0.3:
 - deactivate layers before entering ContextR code and activate them on leave
-- add activation and deactivation hooks for layers
 - add some reflection methods within layers, so the hooks are easier to use
-- add nice syntax to add code to a certain layer
-  ContextR::layer(:foo) do
-    def activated
-      puts self.name + " was activated"
-    end
-  end
