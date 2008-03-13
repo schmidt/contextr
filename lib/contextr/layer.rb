@@ -1,5 +1,17 @@
 module ContextR # :nodoc:
-  class Layer # :nodoc: all
+  class Layer
+    def activated
+      nil
+    end
+    def deactivated
+      nil
+    end
+    def inspect
+      "ContextR::layer(:#{ContextR::symbol_by_layer(self)})"
+    end
+    alias_method :to_s, :inspect
+
+  # :nodoc: all
     def definitions
       @definitions ||= {}
     end
@@ -65,7 +77,7 @@ module ContextR # :nodoc:
                                     version)
     end
 
-    def  register_callbacks(cclass, mmodule)
+    def register_callbacks(cclass, mmodule)
       {:on_wrapper_method_added => mmodule,
        :on_class_method_added   => cclass }.each do | callback, klass |
        ContextR::EventMachine.register(self, callback, 

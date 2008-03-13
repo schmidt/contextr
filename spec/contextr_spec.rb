@@ -238,6 +238,57 @@ describe "ContextR" do
       ContextR::layers.sort_by{ |s| s.to_s }.should include(layer)
     end
   end
+
+  it "should return a layer on #layer(:name)" do
+    ContextR::layer(:log).should == ContextR::layer_by_symbol(:log)
+  end
+  it "should execute the block given to #layer(:name)" do
+    lambda do
+      ContextR::layer(:log) do
+        def moo
+          "moo"
+        end
+      end.should == nil 
+    end.should_not raise_error
+
+    ContextR::layer(:log).moo == "moo"
+  end
+
+  it "should execute activated for all layers on activation" do
+    ContextR::layer(:log) do
+      def activated 
+        raise "activated"
+      end
+    end
+
+    lambda do
+      ContextR::with_layer(:log) { 1 + 1 }
+    end.should raise_error(RuntimeError, "activated")
+
+    ContextR::layer(:log) do
+      def activated 
+        nil 
+      end
+    end
+  end
+
+  it "should execute deactivated for all layers on deactivation" do
+    ContextR::layer(:log) do
+      def deactivated 
+        raise "deactivated"
+      end
+    end
+
+    lambda do
+      ContextR::with_layer(:log) { 1 + 1 }
+    end.should raise_error(RuntimeError, "deactivated")
+
+    ContextR::layer(:log) do
+      def deactivated 
+        nil 
+      end
+    end
+  end
 end
 
 describe "ContextR" do
@@ -250,5 +301,12 @@ describe "ContextR" do
     ContextR::with_layer :security do
       instance.secure.should == "caught in security layer"
     end
+  end
+end
+
+describe ContextR::Layer do
+  it "should give a nice, self-referencing output on inspect and to_s" do
+    eval(ContextR::layer(:log).inspect).should == ContextR::layer(:log)
+    eval(ContextR::layer(:log).to_s).should == ContextR::layer(:log)
   end
 end

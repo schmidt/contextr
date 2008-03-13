@@ -62,6 +62,10 @@ module ContextR
         ContextR::EventMachine::on_method_added(self, name)
         super
       end
+      def include(modul)
+        modul.instance_method.each { |m| method_added(m) }
+        super
+      end
     end
   end
 end
