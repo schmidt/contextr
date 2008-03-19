@@ -4,17 +4,17 @@ that are used internally in ContextR. Extending them would simply result in
 endless stacks.
 
 In custom classes, i.e. classes defined by your code, every method may be 
-extended. There are only 4 exceptions.
+extended. There are only 3 exceptions.
 
 First the exceptions. You may never extend
 
 * `__id__`
 * `__send__`
 * `__clone__`
-* `extend`
 
-The first shall not be redefined anyway. That is why it triggers a 
-warning. The latter is used by ContextR. This currently cannot be circumvented.
+They shall not be redefined, that is why it triggers a warning. ContextR sticks
+to this convention, that's why it does not support `__id__` and `__clone__`. It
+uses it internally, that's why it does not support `__send__`.
 
 Accessing `self`
 ----------------
