@@ -71,6 +71,7 @@ gem, but to run its tests you will need the following gems:
  * @hoe@
  * @rspec@
  * @maruku@
+ * @markaby@
  * @literate_maruku@
 
 h2. Demonstration of usage
