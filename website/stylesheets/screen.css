@@ -85,6 +85,9 @@ pre, code {
   background-color: #111;
   padding: 2px 10px 2px 10px;
 }
+pre code {
+  padding: 0px;
+}
 .comment { color: #aaa; font-style: italic; }
 .keyword { color: #eff; font-weight: bold; }
 .punct { color: #eee; font-weight: bold; }
@@ -136,3 +139,6 @@ pre, code {
 	cursor:	hand;
 }
 
+.older_versions h3, .older_versions {
+  color: #999;
+}

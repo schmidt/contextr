@@ -3,3 +3,4 @@ pkg
 doc
 *.rbc
 .DS_Store
+.*.swp

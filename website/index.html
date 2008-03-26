@@ -33,7 +33,7 @@
     <h1>contextr</h1>
     <div id="version" class="clickable" onclick='document.location = "http://rubyforge.org/projects/contextr"; return false'>
       <p>Get Version</p>
-      <a href="http://rubyforge.org/projects/contextr" class="numbers">0.1.9</a>
+      <a href="http://rubyforge.org/projects/contextr" class="numbers">1.0.0</a>
     </div>
     <h1>&#x2192; &#8216;contextr&#8217;</h1>
 
@@ -41,12 +41,23 @@
 	<h2>What</h2>
 
 
+	<h3>Version 1.0.0</h3>
+
+
+	<p>Along with my Master&#8217;s thesis, the first stable release of ContextR will be
+published. To reflect its status the version number reaches 1.0. You may find
+documentation and examples in the <a href="test/introduction.html">test directory or on this 
+website</a>.</p>
+
+
+<div class="older_versions">
+
 	<h3>Version 0.1.9</h3>
 
 
 	<p>This is a review release. Again, lots of things changed, but I think to the 
 better. There will be more coverage with the 0.2.0. Until then, have a look at
-the shiny new online <a href="/test/introduction.html">documentation</a></p>
+the shiny new online <a href="test/introduction.html">documentation</a></p>
 
 
 	<h3>Version 0.1.1</h3>
@@ -66,7 +77,7 @@ for more information. This brought vast feature coverage with test.</p>
 	<p>There have been minor changes to the reflection <span class="caps">API</span>. To fetch the currently 
 active layers use <code>ContextR::active_layers</code> and you will get an array of symbols
 representing them. <code>ContextR::layers</code> gives all already defined layers, but they
-are not neccessarily active or have been.</p>
+are not necessarily active or have been.</p>
 
 
 	<h3>Version 0.1.0</h3>
@@ -84,6 +95,8 @@ concerning these changes, feel free to use the new
 <a href="http://groups.google.com/group/contextr">mailing list</a> &#8211; any hint is appreciated</p>
 
 
+</div>
+
 	<h2>Installing</h2>
 
 
@@ -96,16 +109,31 @@ concerning these changes, feel free to use the new
 
 
 <pre syntax="ruby">require 'rubygems' 
-gem 'contextr'
 require 'contextr'</pre>
 
 	<p>and ContextR will be ready to use.</p>
 
 
+	<h2>Prerequisites</h2>
+
+
+	<p>To get ContextR running, you won&#8217;t need anything but rubygems and the contextr 
+gem, but to run its tests you will need the following gems:</p>
+
+
+	<ul>
+	<li><code>rake</code></li>
+		<li><code>hoe</code></li>
+		<li><code>rspec</code></li>
+		<li><code>maruku</code></li>
+		<li><code>literate_maruku</code></li>
+	</ul>
+
+
 	<h2>Demonstration of usage</h2>
 
 
-	<p>See the <a href="/test/introduction.html">online documentation</a> for usage examples and
+	<p>See the <a href="test/introduction.html">online documentation</a> for usage examples and
 some meta information or have a look at the other resources below.</p>
 
 
@@ -121,8 +149,11 @@ some meta information or have a look at the other resources below.</p>
 	<ul>
 	<li><a href="http://contextr.rubyforge.org/rdoc">ContextR <span class="caps">API</span> documentation</a></li>
 		<li><a href="http://rubyforge.org/projects/contextr">RubyForge Project Page</a></li>
-		<li><a href="http://www.swa.hpi.uni-potsdam.de/cop/"><span class="caps">COP</span> at <span class="caps">SWA</span> at the <span class="caps">HPI</span></a> More information on other context-oriented programming libaries as well as papers and theoretical work can be found at the <span class="caps">COP</span> page of Prof. Hirschfeld&#8217;s software architecture group at the <span class="caps">HPI</span></li>
-		<li><a href="http://www.nach-vorne.de">Author‘s Development Blog &#8211; The Ruby Ahead</a></li>
+		<li><a href="http://www.swa.hpi.uni-potsdam.de/cop/"><span class="caps">COP</span> at <span class="caps">SWA</span> at the <span class="caps">HPI</span></a> More 
+  information on other context-oriented programming libaries as well as papers 
+  and theoretical work can be found at the <span class="caps">COP</span> page of Prof. Hirschfeld&#8217;s 
+  software architecture group at the <span class="caps">HPI</span></li>
+		<li><a href="http://www.nach-vorne.de">Author&#8217;s Development Blog &#8211; The Ruby Ahead</a></li>
 		<li><a href="http://www.ohloh.net/projects/5037">ContextR Statistics on ohloh</a></li>
 	</ul>
 
@@ -130,11 +161,17 @@ some meta information or have a look at the other resources below.</p>
 	<h2>How to submit patches</h2>
 
 
-	<p>Read the <a href="http://drnicwilliams.com/2007/06/01/8-steps-for-fixing-other-peoples-code/">8 steps for fixing other people&#8217;s code</a> and for section <a href="http://drnicwilliams.com/2007/06/01/8-steps-for-fixing-other-peoples-code/#8b-google-groups">8b: Submit patch to Google Groups</a>, use the Google Group above.</p>
+	<p>Read the <a href="http://drnicwilliams.com/2007/06/01/8-steps-for-fixing-other-peoples-code/">8 steps for fixing other people&#8217;s code</a>
+and for section <a href="http://drnicwilliams.com/2007/06/01/8-steps-for-fixing-other-peoples-code/#8z-email">8z: Email the project owner</a>, 
+use the e-mail address below.</p>
 
 
-	<p>The trunk repository is <code>http://contextr.rubyforge.org/svn/trunk/</code> for anonymous access.</p>
+	<p>The repository is <a href="http://github.com/schmidt/contextr/tree/master">browseable via 
+github</a>. To get a copy to your
+machine use:</p>
 
+
+<pre syntax="ruby">git clone git://github.com/schmidt/contextr.git</pre>
 
 	<h2>License</h2>
 
@@ -147,7 +184,7 @@ some meta information or have a look at the other resources below.</p>
 
 	<p>Comments are welcome. Send an email to <a href="mailto:ruby@schmidtwisser.de">Gregor Schmidt</a>.</p>
     <p class="coda">
-      30th November 2007<br>
+      26th March 2008<br>
       Theme extended from <a href="http://rb2js.rubyforge.org/">Paul Battley</a>
     </p>
 </div>

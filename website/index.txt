@@ -4,11 +4,20 @@ h1. &#x2192; 'contextr'
 
 h2. What
 
+h3. Version 1.0.0
+
+Along with my Master's thesis, the first stable release of ContextR will be
+published. To reflect its status the version number reaches 1.0. You may find
+documentation and examples in the "test directory or on this 
+website":test/introduction.html.
+
+<div class="older_versions">
+
 h3. Version 0.1.9
 
 This is a review release. Again, lots of things changed, but I think to the 
 better. There will be more coverage with the 0.2.0. Until then, have a look at
-the shiny new online "documentation":/test/introduction.html
+the shiny new online "documentation":test/introduction.html
 
 h3. Version 0.1.1
 
@@ -23,7 +32,7 @@ An RSpec was added to allow even more test coverage.
 There have been minor changes to the reflection API. To fetch the currently 
 active layers use @ContextR::active_layers@ and you will get an array of symbols
 representing them. @ContextR::layers@ gives all already defined layers, but they
-are not neccessarily active or have been.
+are not necessarily active or have been.
 
 
 h3. Version 0.1.0
@@ -38,6 +47,8 @@ as less relevant than the other way around. If you have any problems or question
 concerning these changes, feel free to use the new 
 "mailing list":http://groups.google.com/group/contextr - any hint is appreciated
 
+</div>
+
 h2. Installing
 
 <pre syntax="ruby">sudo gem install contextr</pre>
@@ -47,15 +58,24 @@ h2. The basics
 In your code use
 
 <pre syntax="ruby">require 'rubygems' 
-gem 'contextr'
 require 'contextr'</pre>
 
-and ContextR will be ready to use.
+and ContextR will be ready to use. ContextR should work on Ruby 1.8 and JRuby.
 
+h2. Prerequisites
+
+To get ContextR running, you won't need anything but rubygems and the contextr 
+gem, but to run its tests you will need the following gems:
+
+ * @rake@
+ * @hoe@
+ * @rspec@
+ * @maruku@
+ * @literate_maruku@
 
 h2. Demonstration of usage
 
-See the "online documentation":/test/introduction.html for usage examples and
+See the "online documentation":test/introduction.html for usage examples and
 some meta information or have a look at the other resources below.
 
 h2. Forum
@@ -66,16 +86,25 @@ h2. Other resources
 
 * "ContextR API documentation":http://contextr.rubyforge.org/rdoc
 * "RubyForge Project Page":http://rubyforge.org/projects/contextr
-* "COP at SWA at the HPI":http://www.swa.hpi.uni-potsdam.de/cop/ More information on other context-oriented programming libaries as well as papers and theoretical work can be found at the COP page of Prof. Hirschfeld's software architecture group at the HPI
-* "Author‘s Development Blog - The Ruby Ahead":http://www.nach-vorne.de
+* "COP at SWA at the HPI":http://www.swa.hpi.uni-potsdam.de/cop/ More 
+  information on other context-oriented programming libaries as well as papers 
+  and theoretical work can be found at the COP page of Prof. Hirschfeld's 
+  software architecture group at the HPI
+* "Author's Development Blog - The Ruby Ahead":http://www.nach-vorne.de
 * "ContextR Statistics on ohloh":http://www.ohloh.net/projects/5037
 
 
 h2. How to submit patches
 
-Read the "8 steps for fixing other people's code":http://drnicwilliams.com/2007/06/01/8-steps-for-fixing-other-peoples-code/ and for section "8b: Submit patch to Google Groups":http://drnicwilliams.com/2007/06/01/8-steps-for-fixing-other-peoples-code/#8b-google-groups, use the Google Group above.
+Read the "8 steps for fixing other people's code":http://drnicwilliams.com/2007/06/01/8-steps-for-fixing-other-peoples-code/
+and for section "8z: Email the project owner":http://drnicwilliams.com/2007/06/01/8-steps-for-fixing-other-peoples-code/#8z-email, 
+use the e-mail address below.
 
-The trunk repository is <code>http://contextr.rubyforge.org/svn/trunk/</code> for anonymous access.
+The repository is "browseable via 
+github":http://github.com/schmidt/contextr/tree/master. To get a copy to your
+machine use: 
+
+<pre syntax="ruby">git clone git://github.com/schmidt/contextr.git</pre>
 
 h2. License
 

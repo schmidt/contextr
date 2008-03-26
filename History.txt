@@ -1,3 +1,11 @@
+== 1.0.0 2008-04-01
+
+* this is the first stable release
+* major changes
+  * updated documentation
+  * added more meta programming hooks
+  * no further API changes to expect until version 2.0
+
 == 0.1.9 2007-11-30
 
 * this is a review release

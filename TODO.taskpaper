@@ -1,5 +1,2 @@
-Next Release 0.2:
-- check cache invalidation, when method are redefined in layers
-Future Release 0.3:
+Future Release X:
 - deactivate layers before entering ContextR code and activate them on leave
-- add some reflection methods within layers, so the hooks are easier to use

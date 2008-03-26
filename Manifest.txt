@@ -5,6 +5,7 @@ Manifest.txt
 README.txt
 Rakefile
 examples/README
+examples/employer.rb
 examples/node.rb
 lib/contextr.rb
 lib/contextr/class_methods.rb

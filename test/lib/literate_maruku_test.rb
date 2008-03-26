@@ -78,7 +78,7 @@ module LiterateMarukuTest
           end
 
           ul.navi! do
-            Dir[File.dirname(__FILE__) + "/../test_*.mkd"].each do |mkd_file_name|
+            Dir[File.dirname(__FILE__) + "/../*.mkd"].each do |mkd_file_name|
               li do
                 name = File.basename(mkd_file_name, ".mkd").gsub("test_", "")
                 a name.titleize, :href => name + ".html" 
