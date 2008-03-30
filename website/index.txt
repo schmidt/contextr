@@ -6,10 +6,11 @@ h2. What
 
 h3. Version 1.0.0
 
-Along with my Master's thesis, the first stable release of ContextR will be
-published. To reflect its status the version number reaches 1.0. You may find
-documentation and examples in the "test directory or on this 
-website":test/introduction.html.
+Along with my Master's thesis ending and my lightning talk at "euruko
+2008":http://www.euruko2008.org, the first stable release of ContextR will be
+published. To reflect its status the version number reaches *1.0*. You may find
+documentation and examples in the @test@ directory or "on in your Browser on 
+this website":test/introduction.html.
 
 <div class="older_versions">
 
@@ -64,8 +65,11 @@ and ContextR will be ready to use. ContextR should work on Ruby 1.8 and JRuby.
 
 h2. Prerequisites
 
-To get ContextR running, you won't need anything but rubygems and the contextr 
-gem, but to run its tests you will need the following gems:
+*To get ContextR running, you won't need anything but @rubygems@ and the 
+@contextr@ gem* 
+
+To run all *tests* and *documentation* generation you will need the following 
+gems:
 
  * @rake@
  * @hoe@
@@ -85,15 +89,30 @@ h2. Forum
 
 h2. Other resources
 
-* "ContextR API documentation":http://contextr.rubyforge.org/rdoc
-* "RubyForge Project Page":http://rubyforge.org/projects/contextr
+h3. COP related 
+
 * "COP at SWA at the HPI":http://www.swa.hpi.uni-potsdam.de/cop/ More 
-  information on other context-oriented programming libaries as well as papers 
+  information on other context-oriented programming libraries as well as papers 
   and theoretical work can be found at the COP page of Prof. Hirschfeld's 
   software architecture group at the HPI
+
+h3. ContextR related
+
+* "ContextR API documentation":http://contextr.rubyforge.org/rdoc
+* "RubyForge Project Page":http://rubyforge.org/projects/contextr
+* "Lightning Talk about ContextR at euruko 2008":ContextR_euruko_2008.pdf
+
+h3. Miscellaneous 
+
 * "Author's Development Blog - The Ruby Ahead":http://www.nach-vorne.de
 * "ContextR Statistics on ohloh":http://www.ohloh.net/projects/5037
 
+If context-oriented programming does not fit your needs to handle your
+cross-cutting concerns, have a look at aspect-oriented programming. There is a
+feature rich implementation for Ruby named
+"aquarium":http://aquarium.rubyforge.org. Alternatively you may find interest
+in feature-oriented programming. If all that does not help, feel free to drop
+me a note and tell me, what you are trying to achieve.
 
 h2. How to submit patches
 
@@ -113,4 +132,5 @@ This code is free to use under the terms of the "Ruby license":http://www.ruby-l
 
 h2. Contact
 
-Comments are welcome. Send an email to "Gregor Schmidt":mailto:ruby@schmidtwisser.de.
+Comments are welcome. Send an email to "Gregor
+Schmidt":mailto:ruby@schmidtwisser.de.
