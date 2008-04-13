@@ -66,14 +66,12 @@ module ContextR # :nodoc:
 
     def on_core_method_called(receiver, contextified_class, 
                               method_name, arguments, block)
-      proxies = []
-      active_layers_as_classes.each do |layer|
-        proxies += layer.context_proxies(receiver, 
-                                         contextified_class, 
-                                         method_name)
-      end.compact 
 
+      proxies = active_layers_as_classes.inject([]) do |array, layer|
+        array << layer.context_proxy(contextified_class, method_name)
+      end.compact
       proxies << core_proxy(receiver, contextified_class, method_name) 
+
       call_methods_stack(proxies.reverse, receiver, 
                          method_name, arguments, block)
     end

@@ -20,9 +20,7 @@ module ContextR # :nodoc:
     end
 
     def add_method_collection(contextified_class, methods_module)
-      definitions[contextified_class] ||= []
-      definitions[contextified_class].delete(methods_module)
-      definitions[contextified_class].push(methods_module)
+      definitions[contextified_class] = methods_module
 
       (methods_module.instance_methods & 
        contextified_class.instance_methods).each do | method_name |
@@ -31,34 +29,30 @@ module ContextR # :nodoc:
       register_callbacks(contextified_class, methods_module)
     end
 
-    def methods_modules_containing_method(contextified_class, method_name)
-      if definitions.include?(contextified_class)
-        definitions[contextified_class].select do | methods_module | 
-          methods_module.instance_methods.include?(method_name.to_s) 
-        end
-      else
-        []
+    def methods_module_containing_method(contextified_class, method_name)
+      if definitions.include?(contextified_class) and
+         definitions[contextified_class].instance_methods.include?(method_name.to_s) 
+        definitions[contextified_class]
       end
     end
 
-    def context_proxies(receiver, contextified_class, method_name)
-      methods_modules_containing_method(contextified_class, method_name).
-        collect do | methods_module | 
-          context_proxy_for_module(receiver, methods_module) 
-        end.reverse
-    end
+    def context_proxy(contextified_class, method_name)
+      methods_module = methods_module_containing_method(contextified_class, 
+                                                         method_name)
 
-    def context_proxy_for_module(receiver, methods_module)
-      proxies[methods_module] ||= begin
-        p = ContextR::InnerClass.new.extend(methods_module)
-        class << p; hide(:extend); end
-        p
+      if methods_module 
+        proxies[methods_module] ||= begin
+          p = ContextR::InnerClass.new
+          class << p; self; end.class_eval do
+            include(methods_module)
+          end
+          p
+        end
       end
     end
 
     def on_class_method_added(contextified_class, method_name, version)
-      unless methods_modules_containing_method(contextified_class, 
-                                               method_name).empty?
+      if methods_module_containing_method(contextified_class, method_name)
         replace_core_method(contextified_class, method_name, version)
       end
     end
