@@ -1,3 +1,9 @@
+== 1.0.1 2008-04-01
+
+* minor changes
+  * internal refactorings 
+  * updated copyrights 
+
 == 1.0.0 2008-04-01
 
 * this is the first stable release

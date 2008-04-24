@@ -1,4 +1,5 @@
-ContextR is copyrighted free software by Gregor Schmidt <ruby@schmidtwisser.de>.
+ContextR is copyrighted free software by Gregor Schmidt <ruby@schmidtwisser.de>,
+Software-Architecture-Group, Hasso-Plattner-Institute, Potsdam, Germany.
 You can redistribute it and/or modify it under either the terms of the GPL
 (see COPYING file), or the conditions below:
 
