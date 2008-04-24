@@ -38,7 +38,7 @@ module ContextR # :nodoc:
 
     def context_proxy(contextified_class, method_name)
       methods_module = methods_module_containing_method(contextified_class, 
-                                                         method_name)
+                                                        method_name)
 
       if methods_module 
         proxies[methods_module] ||= begin

@@ -13,3 +13,4 @@ This code is published under the same license as Ruby. See LICENSE.txt for more
 information.
 
 (c) 2007 - Gregor Schmidt - Berlin, Germany
+Software-Architecture-Group, Hasso-Plattner-Institute, Potsdam, Germany

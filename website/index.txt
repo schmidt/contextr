@@ -1,8 +1,15 @@
 h1. contextr
 
-h1. &#x2192; 'contextr'
-
 h2. What
+
+ContextR is a library supporting "context-oriented programming
+(COP)":http://www.swa.hpi.uni-potsdam.de/cop/.
+
+h3. Version 1.0.1
+
+This version includes the latest changes, that were introduced when finishing 
+the thesis. Nothing, that changes the usage, performance or API, just minor 
+refactorings inside the library.
 
 h3. Version 1.0.0
 
