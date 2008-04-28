@@ -1,8 +1,10 @@
-COPYING.txt
+GPL.txt
 History.txt
 LICENSE.txt
+MIT.txt
 Manifest.txt
 README.txt
+RUBY.txt
 Rakefile
 examples/README
 examples/employer.rb
