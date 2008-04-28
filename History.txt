@@ -1,3 +1,8 @@
+== 1.0.2 2008-04-01
+
+* 1 major change
+  * added MIT-style license (ContextR is now triple licensed)
+
 == 1.0.1 2008-04-01
 
 * minor changes

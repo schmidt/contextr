@@ -9,8 +9,8 @@ For more information see
 - http://www.contextr.org/ or 
 - http://www.swa.hpi.uni-potsdam.de/cop/
 
-This code is published under the same license as Ruby. See LICENSE.txt for more 
-information.
+This code is published under an MIT-style license or the same terms as Ruby. 
+See LICENSE.txt for more information.
 
 (c) 2007 - Gregor Schmidt - Berlin, Germany
 Software-Architecture-Group, Hasso-Plattner-Institute, Potsdam, Germany
