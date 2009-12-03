@@ -31,6 +31,7 @@ Gem::Specification.new do |s|
      "autotest/rspec_test.rb",
      "benchmark/contextr/bench.rb",
      "benchmark/contextr/results_for_different_hashes.txt",
+     "contextr.gemspec",
      "examples/README",
      "examples/employer.rb",
      "examples/node.rb",
