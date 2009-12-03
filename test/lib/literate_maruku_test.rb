@@ -29,13 +29,16 @@ module LiterateMarukuTest
   TARGET_DIR = File.dirname(__FILE__) + "/../../website/test/"
 
   def self.load(test)
+    require "yaml"
+
     content = LiterateMaruku.require(
                                BASE_DIR + "#{test}.mkd", 
                                :inline => true,
                                :attributes => {:execute => true})
 
     download = "http://rubyforge.org/projects/contextr"
-    version = ContextR::VERSION::STRING 
+    version = YAML::load(File.join(BASE_DIR, "version.yml"))
+    version = [version[:major], version[:minor], version[:patch]].join(".")
     modified = Time.now 
     sub_title = test.titleize
     

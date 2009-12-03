@@ -11,7 +11,7 @@ end
 
 # the basic library code
 %w{public_api class_methods layer 
-   event_machine core_ext version
+   event_machine core_ext
    inner_class}.each { | file | 
       require File.dirname(__FILE__) + "/contextr/#{file}" }
 

@@ -1,3 +1,9 @@
+== 1.0.3 2009-12-03
+
+* minor changes
+  * updated to jeweler
+  * releasing on gemcutter
+
 == 1.0.2 2008-04-01
 
 * 1 major change
