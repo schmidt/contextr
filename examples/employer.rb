@@ -2,59 +2,59 @@ require File.dirname(__FILE__) + "/../lib/contextr"
 
 module EasyInitializerMixin
   def initialize(options = {})
-    options.each do |key, value| 
+    options.each do |key, value|
       self.send("#{key}=", value)
     end
   end
 end
 
-class Employer  
+class Employer
   attr_accessor :name
   include EasyInitializerMixin
 end
-class Person  
+class Person
   attr_accessor :name, :employer
   include EasyInitializerMixin
 end
 
 
-class Employer  
-  def to_s    
-    "Employer\n" +    
-    "Name: %s" % self.name  
+class Employer
+  def to_s
+    "Employer\n" +
+    "Name: %s" % self.name
   end
 end
-class Person  
-  def to_s    
-    "Person\n" +    
-    "Name: %s" % self.name  
+class Person
+  def to_s
+    "Person\n" +
+    "Name: %s" % self.name
   end
 end
 
-class Person  
+class Person
   in_layer :employment do
-    def to_s      
+    def to_s
       super + "\n%s" % yield(:receiver).employer
-    end  
+    end
   end
 end
 
-class Employer  
-  attr_accessor :address  
-  in_layer :detailed_info do   
-    def to_s      
-      super + "\n" + 
-      "Address: %s" % yield(:receiver).address     
-    end  
+class Employer
+  attr_accessor :address
+  in_layer :detailed_info do
+    def to_s
+      super + "\n" +
+      "Address: %s" % yield(:receiver).address
+    end
   end
 end
-class Person  
-  attr_accessor :address  
-  in_layer :detailed_info do   
-    def to_s      
-      super + "\n" + 
-      "Address: %s" % yield(:receiver).address     
-    end  
+class Person
+  attr_accessor :address
+  in_layer :detailed_info do
+    def to_s
+      super + "\n" +
+      "Address: %s" % yield(:receiver).address
+    end
   end
 end
 
@@ -98,10 +98,10 @@ describe ContextR do
       ContextR::active_layers.should == [:employment]
 
       ContextR::with_layer :detailed_info do
-        ContextR::active_layers.should == 
+        ContextR::active_layers.should ==
                         [:detailed_info, :employment]
       end
-  
+
       ContextR::active_layers.should == [:employment]
     end
   end
@@ -137,17 +137,17 @@ describe ContextR do
   end
 end
 
-describe ContextR do          
+describe ContextR do
   it "should hide deactivated layers" do
     ContextR::with_layer :detailed_info, :employment do
-                              
+
       ContextR::active_layers.should ==
                                     [:employment, :detailed_info]
-                              
+
       ContextR::without_layer :employment do
         ContextR::active_layers.should == [:detailed_info]
-      end                     
-                              
+      end
+
       ContextR::without_layer :detailed_info do
         ContextR::active_layers.should == [:employment]
       end
@@ -158,19 +158,19 @@ end
 describe ContextR do
   it "should update order at repetitive activation" do
     ContextR::with_layer :detailed_info, :employment do
-                           
+
       ContextR::active_layers.should == [:employment, :detailed_info]
-                           
+
       ContextR::with_layer :detailed_info do
         ContextR::active_layers.should == [:detailed_info, :employment]
-      end                  
-                           
+      end
+
       ContextR::with_layer :employment do
         ContextR::active_layers.should == [:employment, :detailed_info]
       end
-    end                               
-  end 
-end 
+    end
+  end
+end
 
 describe ContextR do
   it "should activate layer, even when they were explicitly deactivated" do
@@ -182,7 +182,7 @@ describe ContextR do
       end
     end
   end
-end 
+end
 
 describe ContextR do
   def step(index, *layers)
@@ -202,7 +202,7 @@ describe ContextR do
     end
     @mutex.unlock
   end
-  
+
   def task_two
     @mutex.lock
     step(3, :detailed_info)
@@ -213,14 +213,14 @@ describe ContextR do
     @mutex = Mutex.new
     @step = 0
   end
-  
+
   it "should consider dynamic scope" do
     ContextR::with_layer :detailed_info do
       step(1, :detailed_info)
-    
+
       one = Thread.new { task_one }
       two = Thread.new { task_two }
-      
+
       one.join
       two.join
       step(5, :detailed_info)

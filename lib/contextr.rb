@@ -10,9 +10,9 @@ end
       require File.dirname(__FILE__) + "/contextr/modules/#{file}" }
 
 # the basic library code
-%w{public_api class_methods layer 
+%w{public_api class_methods layer
    event_machine core_ext
-   inner_class}.each { | file | 
+   inner_class}.each { | file |
       require File.dirname(__FILE__) + "/contextr/#{file}" }
 
 unless Dynamic.variables.include?( :layers )

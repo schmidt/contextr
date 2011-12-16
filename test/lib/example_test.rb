@@ -9,17 +9,17 @@ module ExampleTest
     def test_class(name)
       ExampleTest::latest_test_class = Class.new(Test::Unit::TestCase)
       ExampleTest::latest_test_case  = 0
-      Object.const_set(name, ExampleTest::latest_test_class) 
+      Object.const_set(name, ExampleTest::latest_test_class)
     end
 
     def example(version = RUBY_VERSION, &block)
       ExampleTest::latest_test_class.class_eval do
-        define_method("test_%03d" % (ExampleTest::latest_test_case += 1), 
+        define_method("test_%03d" % (ExampleTest::latest_test_case += 1),
                       &block)
       end if RUBY_VERSION =~ Regexp.new(version.to_s)
     end
   end
-  
+
   module TestExtension
     def assert_to_s(expected, actual)
       assert_equal(expected, actual.to_s)
@@ -33,11 +33,11 @@ module ExampleTest
       Output.new(object, self)
     end
 
-    class Result 
+    class Result
       attr_accessor :object, :test_class
       def initialize(object, test_class)
         self.object = object
-        self.test_class = test_class 
+        self.test_class = test_class
       end
       def ==(string)
         test_class.assert_equal(string, object)
@@ -54,6 +54,6 @@ end
 class Test::Unit::TestCase
   include ExampleTest::TestExtension
 end
-class Object 
+class Object
   include ExampleTest::ObjectExtension
 end

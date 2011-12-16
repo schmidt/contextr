@@ -1,9 +1,9 @@
 module ContextR
   class EventMachine # :nodoc: all
     module ClassMethods
-      include UniqueId 
+      include UniqueId
 
-      def listeners 
+      def listeners
         @listeners ||= {:method_added => {}}
       end
 
@@ -22,7 +22,7 @@ module ContextR
         version = self.new_unique_id
         self.listeners[:method_added][modul].to_a.each do |listener, method|
           listener.send(method, modul, name, version)
-        end 
+        end
       end
 
       def check_options_hash(options)
@@ -35,7 +35,7 @@ module ContextR
           end
         end
         unless self.listeners.keys.include?(observed[:event])
-          raise ArgumentError.new("Unknown event `#{observed[:event]}`. " + 
+          raise ArgumentError.new("Unknown event `#{observed[:event]}`. " +
                   "Please use one of these: #{self.listeners.keys.join(', ')}")
         end
         observed

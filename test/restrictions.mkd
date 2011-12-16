@@ -1,9 +1,9 @@
 There are certain cases (i.e. Classes and Methods), that may not be extended
-with ContextR. These are e.g. some methods in Enumberable, Array and Hash, 
-that are used internally in ContextR. Extending them would simply result in 
+with ContextR. These are e.g. some methods in Enumberable, Array and Hash,
+that are used internally in ContextR. Extending them would simply result in
 endless stacks.
 
-In custom classes, i.e. classes defined by your code, every method may be 
+In custom classes, i.e. classes defined by your code, every method may be
 extended. There are only 3 exceptions.
 
 First the exceptions. You may never extend
@@ -20,18 +20,18 @@ Accessing `self`
 ----------------
 
 Then there are other problems, related to the way ContextR is implemented and
-its archetecture is designed. The additional context-dependent behaviour does 
+its archetecture is designed. The additional context-dependent behaviour does
 not reside in the extended object itself but in the corresponding layer, or to
-be exact, in an anonymous module, that is constructed for each 
+be exact, in an anonymous module, that is constructed for each
 layer-class-combination. This results in different `self`s for base code and
 layer code. This is in fact not by intention but by accident.
 
-In order to access the original `self`, the one defined by the object, the 
+In order to access the original `self`, the one defined by the object, the
 message was sent to, there is a workaround. Since we did not want to change
 the method signature, the receiver is avaible in a block, that is passed to
-each layer method. `yield(:receiver)` gives you a pointer to it. Please be 
-aware, that you will be able to access public methods only. Everything else 
-could be easily implemented using `instance_eval`, although this has some 
+each layer method. `yield(:receiver)` gives you a pointer to it. Please be
+aware, that you will be able to access public methods only. Everything else
+could be easily implemented using `instance_eval`, although this has some
 performance implications.
 
 If you would like to see `yield(:receiver)` in action, have a look at the other
@@ -44,10 +44,10 @@ As already mentioned, ContextR uses a block to pass parameters to each layered
 method. This implies, that methods, expecting a block, cannot easily access it.
 
 But this is only partially true. Every method in a layered stack may access it
-simply by calling `yield(:block)` or execute it with `yield(:block!)`. Of 
-course, you should test, if a block was given with `yield(:block_given?)`. It 
-is also possible to pass a new block to subsequent calls, but that is not to 
-easy, since it is not possible to pass a block as argument to a block. But 
+simply by calling `yield(:block)` or execute it with `yield(:block!)`. Of
+course, you should test, if a block was given with `yield(:block_given?)`. It
+is also possible to pass a new block to subsequent calls, but that is not to
+easy, since it is not possible to pass a block as argument to a block. But
 again, there is a slightly ugly workaround.
 
 All this may be observed in the following artificial example.
@@ -77,7 +77,7 @@ All this may be observed in the following artificial example.
     example do
       the_magi = TheMagi.new
       names = the_magi.inject do |akku, element|
-        akku.to_s + " " + element.to_s 
+        akku.to_s + " " + element.to_s
       end
 
       result_of(names) == "Casper Melchior Balthasar"
@@ -106,7 +106,7 @@ example is not to useful, but I needed anything to explain some things.
       the_magi = TheMagi.new
       ContextR::with_layer :html_output do
         names = the_magi.inject do |akku, element|
-          akku.to_s + " " + element.to_s 
+          akku.to_s + " " + element.to_s
         end
 
         result_of(names) == "<strong>Casper</strong> " +
@@ -142,20 +142,20 @@ looks so ugly. I would be happy, if I would know a nicer way.
         end
       end
     end
- 
+
 In the first step, we store the original block in a local variable. Afterwards,
 we create the block, i.e. a lambda, that should replace the old block. We
-may easily access the old one, since we stored it beforehand. This local 
+may easily access the old one, since we stored it beforehand. This local
 variable will still be available, when the block is executed.
 
-In the next step, the `new_block` is registered as parameter for subsequent 
+In the next step, the `new_block` is registered as parameter for subsequent
 methods. Then we may call super to pass the control flow to the next layer and
 the base method. Finally we should restore the old block, since layers, that
-were execute before, will get control again, after this execution is finished 
+were execute before, will get control again, after this execution is finished
 and they might be confused, that the block changed by calling super. This would
 break the call stack behaviour.
 
-Finally, we need to store the return value and give it back explicitly, 
+Finally, we need to store the return value and give it back explicitly,
 otherwise the block would be the result.
 
 If in future, this functionality is more often used, I may think about a way
@@ -167,7 +167,7 @@ Oh. Let's use the code and test its output:
       the_magi = TheMagi.new
       ContextR::with_layer :xml_output do
         names = the_magi.inject do |akku, element|
-          akku.to_s + " " + element.to_s 
+          akku.to_s + " " + element.to_s
         end
 
         result_of(names) == "<name>Casper</name> " +
