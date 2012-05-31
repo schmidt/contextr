@@ -31,13 +31,13 @@ class Student < Struct.new(:name, :address, :education)
   end
 end
 
-class Ordering 
+class Ordering
   def inner_outer
     "base"
   end
 
   module InnerMethods
-    def inner_outer 
+    def inner_outer
       "inner #{super} inner"
     end
   end
@@ -74,14 +74,14 @@ end
 
 describe "A contextified object" do
   before do
-    institute = University.new("HPI", "Potsdam") 
+    institute = University.new("HPI", "Potsdam")
     @student = Student.new("Gregor Schmidt", "Berlin", institute)
   end
 
   it "should show base behaviour without activated layers" do
     @student.to_s.should == "Gregor Schmidt"
   end
-  
+
   it "should show specific behaviour with a single activated layer" do
     ContextR::with_layer :address do
       @student.to_s.should == "Gregor Schmidt (Berlin)"
@@ -168,7 +168,7 @@ end
 
 describe "A method modules defining context dependent behaviour" do
   before do
-    institute = University.new("HPI", "Potsdam") 
+    institute = University.new("HPI", "Potsdam")
     @student = Student.new("Gregor Schmidt", "Berlin", institute)
   end
 
@@ -193,7 +193,7 @@ describe "A method modules defining context dependent behaviour" do
       @student.to_s.should == "3: Gregor Schmidt"
     end
   end
-  
+
   it "should not lose its state after redefinition of the module" do
     class Student
       in_layer :log do
@@ -248,7 +248,7 @@ describe "ContextR" do
         def moo
           "moo"
         end
-      end.should == nil 
+      end.should == nil
     end.should_not raise_error
 
     ContextR::layer(:log).moo == "moo"
@@ -256,7 +256,7 @@ describe "ContextR" do
 
   it "should execute activated for all layers on activation" do
     ContextR::layer(:log) do
-      def activated 
+      def activated
         raise "activated"
       end
     end
@@ -266,15 +266,15 @@ describe "ContextR" do
     end.should raise_error(RuntimeError, "activated")
 
     ContextR::layer(:log) do
-      def activated 
-        nil 
+      def activated
+        nil
       end
     end
   end
 
   it "should execute deactivated for all layers on deactivation" do
     ContextR::layer(:log) do
-      def deactivated 
+      def deactivated
         raise "deactivated"
       end
     end
@@ -284,8 +284,8 @@ describe "ContextR" do
     end.should raise_error(RuntimeError, "deactivated")
 
     ContextR::layer(:log) do
-      def deactivated 
-        nil 
+      def deactivated
+        nil
       end
     end
   end

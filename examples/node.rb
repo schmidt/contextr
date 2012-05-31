@@ -87,7 +87,7 @@ module Cop
       visitor.visit(self)
     end
   end
-  class Leaf 
+  class Leaf
     def accept(visitor)
       visitor.visit(self)
     end

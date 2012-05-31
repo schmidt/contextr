@@ -1,4 +1,4 @@
-This document tries to demonstrate the invocation order within 
+This document tries to demonstrate the invocation order within
 context-specific method calls. There are two cases where this is relevant:
 1. There is more than one layer active, that extends the method.
 2. There is more than one module in a single layer that extends the method.
@@ -13,7 +13,7 @@ I. Multiple active layers
 Define the basis first.
 
     class OrderingTest
-      def test_method 
+      def test_method
         "base_method"
       end
 
@@ -36,7 +36,7 @@ Define the basis first.
       end
     end
 
-When multiple layers extend a single method, the order of activation 
+When multiple layers extend a single method, the order of activation
 determines the order of execution.
 
     example do
@@ -51,25 +51,25 @@ determines the order of execution.
       end
 
       ContextR::with_layer :foo, :bar do
-        result_of(instance.test_method) == 
+        result_of(instance.test_method) ==
                         "bar_before foo_before base_method foo_after bar_after"
       end
 
       ContextR::with_layer :foo do
         ContextR::with_layer :bar do
-          result_of(instance.test_method) == 
+          result_of(instance.test_method) ==
                         "bar_before foo_before base_method foo_after bar_after"
         end
       end
 
       ContextR::with_layer :bar, :foo do
-        result_of(instance.test_method) == 
+        result_of(instance.test_method) ==
                         "foo_before bar_before base_method bar_after foo_after"
       end
 
       ContextR::with_layer :bar do
         ContextR::with_layer :foo do
-          result_of(instance.test_method) == 
+          result_of(instance.test_method) ==
                         "foo_before bar_before base_method bar_after foo_after"
         end
       end
@@ -86,15 +86,15 @@ activation is hidden, but is restored again after leaving the block.
       instance = OrderingTest.new
 
       ContextR::with_layer :foo, :bar do
-        result_of(instance.test_method) == 
+        result_of(instance.test_method) ==
                         "bar_before foo_before base_method foo_after bar_after"
 
         ContextR::with_layer :foo do
-          result_of(instance.test_method) == 
+          result_of(instance.test_method) ==
                         "foo_before bar_before base_method bar_after foo_after"
         end
 
-        result_of(instance.test_method) == 
+        result_of(instance.test_method) ==
                         "bar_before foo_before base_method foo_after bar_after"
       end
     end
@@ -116,13 +116,13 @@ we include them into the same layer and see what happens.
         include BarMethods
       end
     end
-     
+
     example do
       instance = OrderingTest.new
       result_of(instance.test_method) == "base_method"
 
       ContextR::with_layer :foo_bar do
-        result_of(instance.test_method) == 
+        result_of(instance.test_method) ==
                         "bar_before foo_before base_method foo_after bar_after"
       end
     end
@@ -133,10 +133,10 @@ III. Conclusion
 ---------------
 
 These should be all case where ordering matters. If you are aware of the
-two basic rules, everything should work as expected. 
+two basic rules, everything should work as expected.
 
   1. Execution order of different layers is determined by layer activation.
   2. Execution within layers is ordered in the way Ruby handles inheritance.
 
-In an ideal world the the execution order would not be important. But hey, 
+In an ideal world the the execution order would not be important. But hey,
 this is not the ideal world, so you better know.

@@ -1,5 +1,5 @@
 class Module
-  #  Adds context-dependent behaviour to instances. 
+  #  Adds context-dependent behaviour to instances.
   #
   #    class Klass
   #      def name
@@ -12,7 +12,7 @@ class Module
   #        end
   #      end
   #    end
-  #    
+  #
   #    k = Klass.new
   #    k.name                    #=> "Klass.\n"
   #    ContextR::with_layer :hello do
@@ -29,8 +29,8 @@ class Module
 
     return_value = extension.module_eval(&block) if block_given?
 
-    ContextR::layer_by_symbol(layer_symbol).add_method_collection(self, 
-                                                                  extension) 
+    ContextR::layer_by_symbol(layer_symbol).add_method_collection(self,
+                                                                  extension)
 
     block_given? ? return_value : extension
   end

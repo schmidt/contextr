@@ -1,10 +1,10 @@
 In Ruby there are multiple ways of defining behaviour on the class side. That
-are messages that are send to the class, not to the instance. Class side 
+are messages that are send to the class, not to the instance. Class side
 behaviour is often useful for functional methods, i.e. methods that do not
-rely on inner state and have no side effects. Mathematical functions have 
+rely on inner state and have no side effects. Mathematical functions have
 these characteristics - that is where the name probably comes from.
 
-**Note**: Java programmers may know these methods as static. It is similar but 
+**Note**: Java programmers may know these methods as static. It is similar but
 not exactly the same.
 
 
@@ -12,7 +12,7 @@ Using `def self.method_name`
 -----------------------------
 
 The simpliest way of defining class side behaviour is prepending self. to the
-method definition. This way, the method is attached to the surrounding class 
+method definition. This way, the method is attached to the surrounding class
 and not instance. A simple example:
 
     class SimpleMath
@@ -43,20 +43,20 @@ eigenclass principle for that. It will look like the following:
     end
 
     example do
-      result_of(SimpleMath.e) == 2.71828183 
+      result_of(SimpleMath.e) == 2.71828183
     end
 
-**Note**: Eigenclasses are also known as *singleton class* or *meta class*. 
-I prefer eigenclass, because it not used with different meanings in other 
+**Note**: Eigenclasses are also known as *singleton class* or *meta class*.
+I prefer eigenclass, because it not used with different meanings in other
 contexts, which eases talking about it with experts in different languages.
 
 Using a module
 --------------
 
-For even more encapsulation you could also use modules and extend the class 
+For even more encapsulation you could also use modules and extend the class
 definition with them. I am using extend here on purpose. Module's include
 method adds the behaviour to the instance side, extend to the class side.
-Or to rephrase it: Module's include method adds the behaviour to instances, 
+Or to rephrase it: Module's include method adds the behaviour to instances,
 extend to the class itself.
 
     class SimpleMath
@@ -70,7 +70,7 @@ extend to the class itself.
     end
 
     example do
-      result_of(SimpleMath.golden_ratio) == 1.6180339887 
+      result_of(SimpleMath.golden_ratio) == 1.6180339887
     end
 
 The last method is e.g. used in the web framework Ruby on Rails. Often
@@ -106,7 +106,7 @@ mixin modules
       result_of(my_simple_math.counter) == 2
     end
 
-This is regarded as the most elegant way of defining class and instance 
+This is regarded as the most elegant way of defining class and instance
 methods for a mixin module. And the basic functionality is the same as in the
 previous example.
 
@@ -114,20 +114,20 @@ After we now know how to define class side behaviour, everybody is curious
 to know how to extend this behaviour using context-oriented programming and
 ContextR.
 
-Additionial, context-dependent behaviour is defined in `in_layer` blocks. 
-These are then attached to the layer, in which the behaviour should reside. 
-For examples on the instance side have a look at the bottom of 
+Additionial, context-dependent behaviour is defined in `in_layer` blocks.
+These are then attached to the layer, in which the behaviour should reside.
+For examples on the instance side have a look at the bottom of
 `test_introduction`.
 
-Let's look how we can achieve the same on the class side for each of the 
+Let's look how we can achieve the same on the class side for each of the
 different methods of defining class side behaviour.
 
 
 Using `def self.method_name`
 ----------------------------
 
-Okay, we won't get rid of the modules, used to encapsulate the 
-context-dependent behaviour, so the extension is a bit noisier, than the 
+Okay, we won't get rid of the modules, used to encapsulate the
+context-dependent behaviour, so the extension is a bit noisier, than the
 basic notation.
 
     class SimpleMath
@@ -147,7 +147,7 @@ side the singleton class.
       result_of(SimpleMath.pi) == 3.14159265
 
       ContextR::with_layer :access_control do
-        result_of(SimpleMath.pi) == "You are not allowed to access this method" 
+        result_of(SimpleMath.pi) == "You are not allowed to access this method"
       end
     end
 
@@ -156,7 +156,7 @@ Using `class << self`
 ---------------------
 
 When your using the eigenclass, you are able to use to good old in\_layer to
-manage the extension. 
+manage the extension.
 
     class SimpleMath
       class << self
@@ -175,13 +175,13 @@ manage the extension.
     end
 
     example do
-      result_of(SimpleMath.e) == 2.71828183 
+      result_of(SimpleMath.e) == 2.71828183
 
       ContextR::with_layer :german do
-        result_of(SimpleMath.e) == "Eulersche Zahl" 
+        result_of(SimpleMath.e) == "Eulersche Zahl"
       end
       ContextR::with_layer :english do
-        result_of(SimpleMath.e) == "Euler's constant" 
+        result_of(SimpleMath.e) == "Euler's constant"
       end
     end
 
@@ -189,17 +189,17 @@ manage the extension.
 Using a module
 --------------
 
-It is only natural to have the same syntax to extend a class using in module 
-for context-dependent behaviour. But for the sake of completeness, I will 
+It is only natural to have the same syntax to extend a class using in module
+for context-dependent behaviour. But for the sake of completeness, I will
 attach another example.
 
     class SimpleMath
       module ClassMethods
         in_layer :exact_computation do
           def golden_ratio
-            sleep(0.01) # In real life this would take a bit longer, 
+            sleep(0.01) # In real life this would take a bit longer,
                         # but I don't have the time.
-            1.6180339887_4989484820_4586834365_6381177203_0917980576 
+            1.6180339887_4989484820_4586834365_6381177203_0917980576
           end
         end
       end
@@ -209,8 +209,8 @@ attach another example.
       result_of(SimpleMath.golden_ratio) == 1.6180339887
 
       ContextR::with_layer :exact_computation do
-        result_of(SimpleMath.golden_ratio) == 
-                      1.6180339887_4989484820_4586834365_6381177203_0917980576 
+        result_of(SimpleMath.golden_ratio) ==
+                      1.6180339887_4989484820_4586834365_6381177203_0917980576
       end
     end
 
@@ -220,7 +220,7 @@ Conclusion
 
 In general, there are two options to define context-dependent class side
 behaviour. Use in\_layer in the eigenclass or use extend anywhere else. Both
-options result in the same behaviour, just like the different options in 
+options result in the same behaviour, just like the different options in
 plain ruby look different, but have the same effect.
 
 The programmer is free to use, whatever suites best. This is still Ruby.

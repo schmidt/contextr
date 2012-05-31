@@ -42,7 +42,7 @@ class TestPlain < Test::Unit::TestCase
   end
 
   def test_002
-    ContextR.with_layer :b do 
+    ContextR.with_layer :b do
       assert_equal("a1 (b1)", $c1.to_s)
       assert_equal("a2 (b2)", $c2.to_s)
     end
@@ -54,23 +54,23 @@ class TestPlain < Test::Unit::TestCase
   end
 
   def test_004
-    ContextR.with_layer :c do 
+    ContextR.with_layer :c do
       assert_equal("a2; a1", $c2.to_s)
     end
   end
 
   def test_005
-    ContextR.with_layer :b, :c do 
+    ContextR.with_layer :b, :c do
       assert_equal("a2 (b2); a1 (b1)", $c2.to_s)
     end
   end
 
   def test_006
     ContextR::with_layer :b do
-      ContextR.with_layer :c do 
+      ContextR.with_layer :c do
         assert_equal("a2 (b2); a1 (b1)", $c2.to_s)
 
-        ContextR.without_layer :c do 
+        ContextR.without_layer :c do
           assert_equal("a2 (b2)", $c2.to_s)
         end
 

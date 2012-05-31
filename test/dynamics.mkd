@@ -1,8 +1,8 @@
 One of the most powerful features of Ruby is the concept of open classes. At
-everytime, the programmer is able to change class, instances and methods. 
+everytime, the programmer is able to change class, instances and methods.
 This has immediate effects on all instances and works like a charm.
 
-One of the goals of ContextR 0.1.0 was to bring this power to the 
+One of the goals of ContextR 0.1.0 was to bring this power to the
 context-oriented abstraction. The following examples will simply demonstrate,
 that it works. Not more, not less.
 
@@ -28,13 +28,13 @@ that it works. Not more, not less.
       def red
         current == :red
       end
-      def yellow 
+      def yellow
         current == :yellow
       end
       def green
         current == :green
       end
-      
+
       def text
         current.to_s
       end
@@ -45,13 +45,13 @@ Here we have a simple dutch traffic light. Let's test if it works.
     $traffic_light = TrafficLight.new
     example do
       # It is always a good idea, to start with red
-      result_of($traffic_light.red) == true 
+      result_of($traffic_light.red) == true
 
       $traffic_light.next
-      result_of($traffic_light.yellow) == true 
+      result_of($traffic_light.yellow) == true
 
       $traffic_light.next
-      result_of($traffic_light.green) == true 
+      result_of($traffic_light.green) == true
 
       $traffic_light.next
       result_of($traffic_light.yellow) == true
@@ -60,7 +60,7 @@ Here we have a simple dutch traffic light. Let's test if it works.
       result_of($traffic_light.red) == true
     end
 
-But in Germany the lights work different. The sequence looks like the 
+But in Germany the lights work different. The sequence looks like the
 following
   red
   red and yellow
@@ -79,24 +79,24 @@ should both return true, when the :red_and_yellow state is active.
         end
 
         def red
-          (yield(:receiver).current == :red_and_yellow) or super 
+          (yield(:receiver).current == :red_and_yellow) or super
         end
-        def yellow 
-          (yield(:receiver).current == :red_and_yellow) or super 
+        def yellow
+          (yield(:receiver).current == :red_and_yellow) or super
         end
       end
     end
 
     example do
       ContextR::with_layer :german do
-        result_of($traffic_light.red) == true 
+        result_of($traffic_light.red) == true
 
         $traffic_light.next
-        result_of($traffic_light.red) == true 
-        result_of($traffic_light.yellow) == true 
+        result_of($traffic_light.red) == true
+        result_of($traffic_light.yellow) == true
 
         $traffic_light.next
-        result_of($traffic_light.green) == true 
+        result_of($traffic_light.green) == true
 
         $traffic_light.next
         result_of($traffic_light.yellow) == true
@@ -107,19 +107,19 @@ should both return true, when the :red_and_yellow state is active.
     end
 
 
-Now we have a traffic light, that is able to work in the Netherlands and in 
+Now we have a traffic light, that is able to work in the Netherlands and in
 Germany. But this is just the start. This example should show, that both
 method modules and the base implementation may be changed at runtime and
 the changes have immediate effect, just like they do in the basic ruby world.
 
 In this example would like to change the textual representation a bit. I
-think they do not give much information. Let's change extend them. 
+think they do not give much information. Let's change extend them.
 
     example do
       result_of($traffic_light.text) == "red"
       class TrafficLight
-        # When running these test with ruby -w the following line will raise a 
-        # warning, that you are discarding the old method definition. To avoid 
+        # When running these test with ruby -w the following line will raise a
+        # warning, that you are discarding the old method definition. To avoid
         # these simply undefine it before defining a new implementation.
         def text
           case @state
@@ -140,7 +140,7 @@ traffic light.
       # The old behaviour
       ContextR::with_layer :german do
         $traffic_light.next
-        result_of($traffic_light.text) == 
+        result_of($traffic_light.text) ==
                         "It's yellow. Prepare to start. It will be green soon."
       end
 
@@ -151,7 +151,7 @@ traffic light.
             if yield(:receiver).current == :red_and_yellow
               "It's red and yellow at once. It will be green soon."
             else
-              super 
+              super
             end
           end
         end
@@ -159,7 +159,7 @@ traffic light.
 
       # The new behaviour
       ContextR::with_layer :german do
-        result_of($traffic_light.text) == 
+        result_of($traffic_light.text) ==
                           "It's red and yellow at once. It will be green soon."
       end
     end
@@ -171,14 +171,14 @@ This is a german traffic light, right?
     example do
       # The old behaviour
       ContextR::with_layer :german do
-        result_of($traffic_light.text) == 
+        result_of($traffic_light.text) ==
                           "It's red and yellow at once. It will be green soon."
       end
 
       class TrafficLight
         in_layer :german do
-          # When running these test with ruby -w the following line will raise 
-          # a warning, that you are discarding the old method definition. To 
+          # When running these test with ruby -w the following line will raise
+          # a warning, that you are discarding the old method definition. To
           # avoid these simply undefine it before defining a new implementation.
           def text
             case yield(:receiver).current

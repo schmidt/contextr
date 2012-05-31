@@ -8,18 +8,18 @@ Perhaps you would like to attach caching to such functions. But only under
 certain circumstances. If your application lacks time, it is a good idea to
 activate result caching. If it lacks memory, it is a bad one.
 
-This perfectly sounds like a problem, that can be solved using 
+This perfectly sounds like a problem, that can be solved using
 context-oriented programming.
 
 But for caching, we need a place to store the computed results. One could
 store them in the instance that computes them, but this would be strange,
 because, the code residing in it does not make direct use of this state.
 Perhaps we are using variables, that other methods use for their own
-purpose and this would result in strange results. We could use cryptic 
+purpose and this would result in strange results. We could use cryptic
 instance variable names, but all this is just a workaround.
 
 What we want is to attach the state to the code, that uses it. This is the
-main idea of object-oriented design anyway. So ContextR gives you the 
+main idea of object-oriented design anyway. So ContextR gives you the
 opportunity to save state inside your method modules. Code and state stay
 side by side. This state will reside there even after deactivating the
 layer, so you can reuse it. Perfect for our caching approach.
@@ -30,7 +30,7 @@ Fibonacci numbers
 
 We will use the good old Fibonacci numbers to demonstrate our approach. First
 the simple recursive computation, that becomes really slow for larger numbers.
-I know that there is a non-recursive algorithm, working faster, but this 
+I know that there is a non-recursive algorithm, working faster, but this
 would not make such a good example. So just assume, that the following
 code is the fastest, you could possibly get.
 
@@ -72,7 +72,7 @@ Just to make sure, that it is slow, I will try to compute Fib(100)
       result_of(timeout_raised) == true
     end
 
-Okay, the 0.01 seconds are really impatient, but I know, that caching will 
+Okay, the 0.01 seconds are really impatient, but I know, that caching will
 come to rescue and makes it happen.
 
 Let's define a simple caching method. If I already know the result, return
@@ -87,13 +87,13 @@ our variable.
           end
 
           def compute(fixnum)
-            cache[fixnum] ||= super 
+            cache[fixnum] ||= super
           end
         end
       end
     end
 
-If you are not familiar with the above syntax, to define context dependent 
+If you are not familiar with the above syntax, to define context dependent
 behaviour, have a look at `test_class_side.rb`.
 
 Now let's compute Fib(100) again. Of course with caching enabled
@@ -112,7 +112,7 @@ Now let's compute Fib(100) again. Of course with caching enabled
       end
 
       # This time the time out was not triggered
-      result_of(timeout_raised) == false 
+      result_of(timeout_raised) == false
     end
 
 It is that simple to add state to your method modules. And just to make sure,
@@ -136,13 +136,13 @@ Let's do a little warm up and make sure, everything works as expected.
     example do
       $layer_state_example.state = true
       result_of($layer_state_example.state) == true
-      $layer_state_example.state = false 
+      $layer_state_example.state = false
       result_of($layer_state_example.state) == false
 
       ContextR::with_layer :test_layer_state do
         $layer_state_example.state = true
         result_of($layer_state_example.state) == true
-        $layer_state_example.state = false 
+        $layer_state_example.state = false
         result_of($layer_state_example.state) == false
       end
     end
@@ -153,7 +153,7 @@ Until now, I did not prove anything. Let's try it.
       # Set the state
       $layer_state_example.state = true
       ContextR::with_layer :test_layer_state do
-        $layer_state_example.state = false 
+        $layer_state_example.state = false
       end
 
       # And make sure, that they differ

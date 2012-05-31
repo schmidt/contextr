@@ -1,5 +1,5 @@
 module ContextR
-  module PublicApi 
+  module PublicApi
     # allows the explicit activation of layers within a block context
     #
     #   ContextR::with_layers(:foo, :bar) do
@@ -10,7 +10,7 @@ module ContextR
     #     end
     #
     #   end
-    # 
+    #
     # :call-seq:
     #   with_layers(layer_name, ...) { ... }
     #
@@ -29,7 +29,7 @@ module ContextR
     alias with_layer with_layers
 
     # allows the explicit deactivation of layers within a block context
-    # 
+    #
     #   ContextR::with_layers(:foo, :bar) do
     #     ContextR::active_layers            # => [:default, :foo, :bar]
     #

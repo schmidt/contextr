@@ -6,7 +6,7 @@ begin
   Jeweler::Tasks.new do |gemspec|
     gemspec.name = "contextr"
     gemspec.summary = "Context-oriented programming API for Ruby"
-    gemspec.description = "The goal is to equip Ruby with an API to allow " + 
+    gemspec.description = "The goal is to equip Ruby with an API to allow " +
                           "context-oriented programming."
     gemspec.email = "ruby@schmidtwisser.de"
     gemspec.homepage = "http://github.com/schmidt/contextr"
@@ -34,7 +34,7 @@ Rake::RDocTask.new(:doc) do |doc|
 end
 
 desc "Run the tests under test"
-task :test do 
+task :test do
   require 'rake/runtest'
   Rake.run_tests 'test/**/test_*.rb'
 end
