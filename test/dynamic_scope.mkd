@@ -1,10 +1,10 @@
-This explanation is a bit tricky. First of all thread programming is always 
-tricky and then, testing threads to gain repeatable results makes it even less 
+This explanation is a bit tricky. First of all thread programming is always
+tricky and then, testing threads to gain repeatable results makes it even less
 readable.
 
 I tried to improve it by defining a little helper method called `step`. It shall
 test if all chunks are executed in the expected order and additionally check
-if the expected layers are activated. 
+if the expected layers are activated.
 
 
 Layer activation shall be dynamically scoped. This is basically no problem, but
@@ -13,8 +13,8 @@ ugly part is done by Christian Neukirchen's dynamic.rb library.
 
 The following example does not demonstrate anything useful. It is just a more or
 less readable test. Follow the `step`s, if you want to get the execution order.
-As you may see, leaving the inner block in step 5 results in the "lost" layer 
-`:b` and it is "restored" in step 6. This is the base line of this test. All 
+As you may see, leaving the inner block in step 5 results in the "lost" layer
+`:b` and it is "restored" in step 6. This is the base line of this test. All
 the rest is support code.
 
     example do
@@ -47,9 +47,9 @@ the rest is support code.
       ContextR::with_layer :a do
         step(2, :a)
 
-        one = Thread.new(&one_block) 
+        one = Thread.new(&one_block)
         two = Thread.new(&two_block)
-        
+
         step(nil, :a)
 
         one.join

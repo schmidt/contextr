@@ -37,7 +37,7 @@ module ContextR
         end
       end
     end
-    
+
     instance_methods.each { |m| hide(m) }
 
     def method_missing(*rest_args)

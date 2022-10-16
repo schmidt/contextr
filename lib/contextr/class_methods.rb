@@ -55,7 +55,7 @@ module ContextR # :nodoc:
           when :next
             rest_args.shift unless method_name == :method_missing
             call_methods_stack(stack, receiver, method_name, rest_args, block)
-          else 
+          else
             raise ArgumentError, "Use only :receiver, :block, :block_given?, " +
                                  ":block!, :block=, or :next " +
                                  "as first argument."
@@ -64,15 +64,15 @@ module ContextR # :nodoc:
       end
     end
 
-    def on_core_method_called(receiver, contextified_class, 
+    def on_core_method_called(receiver, contextified_class,
                               method_name, arguments, block)
 
       proxies = active_layers_as_classes.inject([]) do |array, layer|
         array << layer.context_proxy(contextified_class, method_name)
       end.compact
-      proxies << core_proxy(receiver, contextified_class, method_name) 
+      proxies << core_proxy(receiver, contextified_class, method_name)
 
-      call_methods_stack(proxies.reverse, receiver, 
+      call_methods_stack(proxies.reverse, receiver,
                          method_name, arguments, block)
     end
 
@@ -90,7 +90,7 @@ module ContextR # :nodoc:
             def #{method_name}(*arguments, &block)
               ContextR::on_core_method_called(
                 self,
-                ObjectSpace._id2ref(#{klass.object_id}), 
+                ObjectSpace._id2ref(#{klass.object_id}),
                 :#{method_name},
                 arguments, block)
             end
@@ -99,10 +99,10 @@ module ContextR # :nodoc:
     end
 
     def save_core_method(klass, method_name, version)
-      if !meta_method?(method_name) and 
+      if !meta_method?(method_name) and
           (!stored_core_methods[klass].include?(method_name) or
               stored_core_methods[klass][method_name][:version] < version)
-        stored_core_methods[klass][method_name] = 
+        stored_core_methods[klass][method_name] =
           { :version => version, :code => klass.instance_method(method_name) }
       end
     end

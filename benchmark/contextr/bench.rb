@@ -30,7 +30,7 @@ class Foo
     def once
       true
     end
-    def twice 
+    def twice
       true
     end
   end

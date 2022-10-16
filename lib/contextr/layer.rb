@@ -22,7 +22,7 @@ module ContextR # :nodoc:
     def add_method_collection(contextified_class, methods_module)
       definitions[contextified_class] = methods_module
 
-      (methods_module.instance_methods & 
+      (methods_module.instance_methods &
        contextified_class.instance_methods).each do | method_name |
         replace_core_method(contextified_class, method_name, 0)
       end
@@ -31,16 +31,16 @@ module ContextR # :nodoc:
 
     def methods_module_containing_method(contextified_class, method_name)
       if definitions.include?(contextified_class) and
-         definitions[contextified_class].instance_methods.include?(method_name.to_s) 
+         definitions[contextified_class].instance_methods.include?(method_name.to_s)
         definitions[contextified_class]
       end
     end
 
     def context_proxy(contextified_class, method_name)
-      methods_module = methods_module_containing_method(contextified_class, 
+      methods_module = methods_module_containing_method(contextified_class,
                                                         method_name)
 
-      if methods_module 
+      if methods_module
         proxies[methods_module] ||= begin
           p = ContextR::InnerClass.new
           class << p; self; end.class_eval do
@@ -58,10 +58,10 @@ module ContextR # :nodoc:
     end
 
     def on_wrapper_method_added(methods_module, method_name, version)
-      self.definitions.collect do | each_class, each_methods_modules | 
+      self.definitions.collect do | each_class, each_methods_modules |
         if each_methods_modules.include?(methods_module)
           each_class
-        end 
+        end
       end.compact.select do |contextified_class|
         contextified_class.instance_methods.include?(method_name.to_s)
       end.each do | contextified_class |
@@ -77,7 +77,7 @@ module ContextR # :nodoc:
     def register_callbacks(cclass, mmodule)
       {:on_wrapper_method_added => mmodule,
        :on_class_method_added   => cclass }.each do | callback, klass |
-       ContextR::EventMachine.register(self, callback, 
+       ContextR::EventMachine.register(self, callback,
                                        :on_event => :method_added,
                                        :in_class => klass)
       end

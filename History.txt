@@ -12,8 +12,8 @@
 == 1.0.1 2008-04-01
 
 * minor changes
-  * internal refactorings 
-  * updated copyrights 
+  * internal refactorings
+  * updated copyrights
 
 == 1.0.0 2008-04-01
 
@@ -35,7 +35,7 @@
 
 * major changes
   * added Module#extend to allow class side behaviour definition
-  * migrated from undocumented tests in /examples to 
+  * migrated from undocumented tests in /examples to
     well documented examples in /test
   * added a RSpec to guarantee basic functionality
 

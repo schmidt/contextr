@@ -32,20 +32,20 @@ module LiterateMarukuTest
     require "yaml"
 
     content = LiterateMaruku.require(
-                               BASE_DIR + "#{test}.mkd", 
+                               BASE_DIR + "#{test}.mkd",
                                :inline => true,
                                :attributes => {:execute => true})
 
     download = "http://rubyforge.org/projects/contextr"
     version = YAML::load(File.join(BASE_DIR, "version.yml"))
     version = [version[:major], version[:minor], version[:patch]].join(".")
-    modified = Time.now 
+    modified = Time.now
     sub_title = test.titleize
-    
+
     doc = Markaby::Builder.new.xhtml_strict do
       head do
         title "ContextR - #{sub_title} - Documentation"
-        link :href => "../stylesheets/screen.css", :rel=>'stylesheet', 
+        link :href => "../stylesheets/screen.css", :rel=>'stylesheet',
              :type=>'text/css', :media => "screen"
         script :src => "../javascripts/rounded_corners_lite.inc.js",
               :type =>"text/javascript"
@@ -60,7 +60,7 @@ module LiterateMarukuTest
                 autoPad: true,
                 validTags: ["div"]
             }
-            var versionBox = new curvyCorners(settings, 
+            var versionBox = new curvyCorners(settings,
                                               document.getElementById("version"));
             versionBox.applyCornersToAll();
           }
@@ -68,7 +68,7 @@ module LiterateMarukuTest
       end
       body do
         div.main! do
-          h1 sub_title 
+          h1 sub_title
           div.version! :class => "clickable",
                :onclick => "document.location='#{download}'; return false" do
             p "Get Version"
@@ -77,14 +77,14 @@ module LiterateMarukuTest
           h1 do
             self << "&#x2192; &#8216;"
             a "contextr", :href => "http://contextr.rubyforge.org/"
-            self << "&#8217;" 
+            self << "&#8217;"
           end
 
           ul.navi! do
             Dir[File.dirname(__FILE__) + "/../*.mkd"].each do |mkd_file_name|
               li do
                 name = File.basename(mkd_file_name, ".mkd").gsub("test_", "")
-                a name.titleize, :href => name + ".html" 
+                a name.titleize, :href => name + ".html"
               end
             end
           end
@@ -100,7 +100,7 @@ module LiterateMarukuTest
       end
     end
     Dir.mkdir(TARGET_DIR) unless File.exist?(TARGET_DIR)
-    File.open(TARGET_DIR + 
+    File.open(TARGET_DIR +
             "#{test}.html", "w") do |f|
       f.puts(%q{<!DOCTYPE html
           PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
